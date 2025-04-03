@@ -1,0 +1,28 @@
+<div class="login-page">
+  <div class="login-container">
+    <form class="login-form" [formGroup]="form" (ngSubmit)="submit()">
+      <div class="form-group">
+        <label for="email">Email</label>
+        <input type="email" formControlName="email" class="form-control" required autofocus />
+        <div class="error" *ngIf="form.get('email')?.invalid && form.get('email')?.dirty">
+          Enter a valid email.
+        </div>
+
+        <label for="password">Password</label>
+        <input type="password" formControlName="password" class="form-control" required />
+        <div class="error" *ngIf="form.get('password')?.invalid && form.get('password')?.dirty">
+          Password is required.
+        </div>
+
+        <div class="remember-me">
+          <label for="rememberMe">Remember Me
+            <input type="checkbox" formControlName="rememberMe" id="rememberMe" />
+          </label>
+        </div>
+        <button class="login-button" type="submit">Login</button>
+        <p>Don't have an account? <a href="/register">Register</a></p>
+        <div class="error">{{ errorMessage }}</div>
+      </div>
+    </form>
+  </div>
+</div>
