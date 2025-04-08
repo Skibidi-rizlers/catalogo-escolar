@@ -1,4 +1,5 @@
 ﻿using Catalogo_Escolar_API.Model;
+using Catalogo_Escolar_API.Services.AuthService;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 
@@ -11,10 +12,11 @@ namespace Catalogo_Escolar_API.Controllers
     [Route("auth")]
     public class AuthController : ControllerBase
     {
+        private readonly IAuthService _authService;
         /// <summary>
         /// Represents the default constructor of the <see cref="AuthController"/> class.
         /// </summary>
-        public AuthController() { }
+        public AuthController(IAuthService authService) { _authService = authService; }
 
         /// <summary>
         /// Authenticates the user and generates a JWT token.
@@ -23,20 +25,27 @@ namespace Catalogo_Escolar_API.Controllers
         /// <returns>A JWT token if authentication is successful.</returns>
         /// <response code="200">Authentication successful.</response>
         /// <response code="400">Data in body is not correct.</response>
-        /// <response code="422">Could not login.</response>
+        /// <response code="401">Could not log in user.</response>
+        /// <response code="500">Server side error.</response>
         [HttpPost("login")]
         [ProducesResponseType(200)]
         [ProducesResponseType(400)]
-        [ProducesResponseType(422)]
+        [ProducesResponseType(401)]
+        [ProducesResponseType(500)]
         public async Task<ActionResult<string>> Login([FromBody] LoginModel model)
         {
             try
             {
-                return Ok("This is your JWT");
+                string? token = await _authService.Login(model.Email, model.Password);
+                if (string.IsNullOrEmpty(token))
+                {
+                    return Unauthorized("Failed to login user.");
+                }
+                return Ok(token);
             }
             catch (Exception ex)
             {
-                return UnprocessableEntity("Failed to log in user.");
+                return StatusCode(500, "Internal server error.");
             }
         }
 

@@ -1,10 +1,14 @@
 using System.Reflection;
+using Catalogo_Escolar_API.Services.AuthService;
+using Catalogo_Escolar_API.Services.StudentService;
 using Microsoft.EntityFrameworkCore;
 
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
+builder.Services.AddScoped<IStudentService, StudentService>();
+builder.Services.AddScoped<IAuthService, AuthService>();
 
 // Add controllers to the container
 builder.Services.AddControllers();
@@ -17,6 +21,7 @@ builder.Services.AddSwaggerGen(c =>
     var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
     var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
     c.IncludeXmlComments(xmlPath);
+});
   
 builder.Services.AddDbContext<SchoolContext>(options =>
 {
