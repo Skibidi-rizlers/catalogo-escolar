@@ -1,7 +1,7 @@
 ﻿namespace Catalogo_Escolar_API.Services.AuthService
 {
     /// <summary>
-    /// Represents the authentication service. It is used to authenticate users and any actions it may include, such as JWT creation.
+    /// Interface for AuthService
     /// </summary>
     public interface IAuthService
     {
@@ -19,7 +19,7 @@
         /// <param name="email">Email of user</param>
         /// <param name="oldPassword">Old password of user</param>
         /// <param name="newPassword">New desire password of user</param>
-        /// <returns>Success / Failure of operation</returns>
+        /// <returns>Result of operation</returns>
         Task<bool> ChangePassword(string email, string oldPassword, string newPassword);
     }
 }

@@ -1,6 +1,6 @@
 ﻿using Catalogo_Escolar_API.Model;
 using Catalogo_Escolar_API.Services.AuthService;
-using Microsoft.AspNetCore.Http.HttpResults;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Catalogo_Escolar_API.Controllers
@@ -10,6 +10,7 @@ namespace Catalogo_Escolar_API.Controllers
     /// </summary>
     [ApiController]
     [Route("auth")]
+    [Authorize]
     public class AuthController : ControllerBase
     {
         private readonly IAuthService _authService;
@@ -32,6 +33,7 @@ namespace Catalogo_Escolar_API.Controllers
         [ProducesResponseType(400)]
         [ProducesResponseType(401)]
         [ProducesResponseType(500)]
+        [AllowAnonymous]
         public async Task<ActionResult<string>> Login([FromBody] LoginModel model)
         {
             try
@@ -60,6 +62,7 @@ namespace Catalogo_Escolar_API.Controllers
         [ProducesResponseType(200)]
         [ProducesResponseType(400)]
         [ProducesResponseType(422)]
+        [AllowAnonymous]
         public async Task<ActionResult<bool>> Register()
         {
             try
