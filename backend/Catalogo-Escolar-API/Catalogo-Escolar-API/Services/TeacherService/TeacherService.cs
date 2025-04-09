@@ -1,22 +1,21 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Catalogo_Escolar_API.Services.StudentService;
+using Microsoft.EntityFrameworkCore;
 
-namespace Catalogo_Escolar_API.Services.StudentService
+namespace Catalogo_Escolar_API.Services.TeacherService
 {
-    public class StudentService : IStudentService
+    public class TeacherService : ITeacherService
     {
         private readonly SchoolContext _context;
-
-        public StudentService(SchoolContext context)
+        public TeacherService(SchoolContext context)
         {
             _context = context;
         }
-
         public Task<bool> Add(User data)
         {
             try
             {
                 var user = _context.Users.Add(data);
-                _context.Students.Add(new Student() { UserId = user.Entity.Id});
+                _context.Teachers.Add(new Teacher() { UserId = user.Entity.Id });
                 _context.SaveChangesAsync();
                 return Task.FromResult(true);
             }
@@ -31,10 +30,10 @@ namespace Catalogo_Escolar_API.Services.StudentService
         {
             try
             {
-                Student? student = _context.Students.Include(s => s.User).FirstOrDefault(s => s.User.Email == email);
-                if (student != null)
+                Teacher? teacher = _context.Teachers.Include(s => s.User).FirstOrDefault(s => s.User.Email == email);
+                if (teacher != null)
                 {
-                    student.User.Password = newPassword;
+                    teacher.User.Password = newPassword;
                     _context.SaveChangesAsync();
                     return Task.FromResult(true);
                 }
@@ -47,9 +46,9 @@ namespace Catalogo_Escolar_API.Services.StudentService
             }
         }
 
-        public Task<Student?> Get(string email, string password)
+        public Task<Teacher?> Get(string email, string password)
         {
-            Student? student = _context.Students.Include(s => s.User).FirstOrDefault(s => s.User.Email == email && s.User.Password == password);
+            Teacher? student = _context.Teachers.Include(s => s.User).FirstOrDefault(s => s.User.Email == email && s.User.Password == password);
             return Task.FromResult(student);
         }
     }

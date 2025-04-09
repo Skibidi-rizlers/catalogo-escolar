@@ -38,7 +38,7 @@ namespace Catalogo_Escolar_API.Controllers
         {
             try
             {
-                string? token = await _authService.Login(model.Email, model.Password);
+                string? token = await _authService.Login(model);
                 if (string.IsNullOrEmpty(token))
                 {
                     return Unauthorized("Failed to login user.");

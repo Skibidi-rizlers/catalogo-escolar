@@ -3,6 +3,7 @@ using System.Text;
 using Catalogo_Escolar_API.Helpers;
 using Catalogo_Escolar_API.Services.AuthService;
 using Catalogo_Escolar_API.Services.StudentService;
+using Catalogo_Escolar_API.Services.TeacherService;
 using Catalogo_Escolar_API.Settings.AuthSettings;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
@@ -30,6 +31,7 @@ builder.Services.AddSingleton<IAuthSettings>(sp => sp.GetRequiredService<IOption
 
 // Add services to the container.
 builder.Services.AddScoped<IStudentService, StudentService>();
+builder.Services.AddScoped<ITeacherService, TeacherService>();
 builder.Services.AddScoped<JWTGenerator>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 

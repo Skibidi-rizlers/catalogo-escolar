@@ -4,62 +4,50 @@ using Catalogo_Escolar_API.Services.StudentService;
 
 namespace Catalogo_Escolar_API.Services.AuthService
 {
-    /// <summary>
-    /// Represents the authentication service. It is used to authenticate users and any actions it may include.
-    /// </summary>
     public class AuthService : IAuthService
     {
         private readonly IStudentService _studentService;
+        private readonly ITeacherService _teacherService;
         private readonly JWTGenerator _jwtGenerator;
-        /// <summary>
-        /// Constructor for AuthService
-        /// </summary>
-        /// <param name="studentService"></param>
-        /// <param name="jWTGenerator"></param>
-        public AuthService(IStudentService studentService, JWTGenerator jWTGenerator)
+
+        public AuthService(IStudentService studentService, ITeacherService teacherService, JWTGenerator jWTGenerator)
         {
             _studentService = studentService;
+            _teacherService = teacherService;
             _jwtGenerator = jWTGenerator;
         }
-        /// <summary>
-        /// Changes the password of the user.
-        /// </summary>
-        /// <param name="email">Email of user</param>
-        /// <param name="oldPassword">Old password of user</param>
-        /// <param name="newPassword">New desire password of user</param>
-        /// <returns>Result of operation</returns>
+
         public async Task<bool> ChangePassword(string email, string oldPassword, string newPassword)
         {
             throw new NotImplementedException("Change password not implemented yet.");
         }
 
-        /// <summary>
-        /// Returns a JWT token if the user is authenticated.
-        /// </summary>
-        /// <param name="email">Email of user</param>
-        /// <param name="password">Password of user</param>
-        /// <returns>JWT</returns>
-        public async Task<string?> Login(string email, string password)
+        public async Task<string?> Login(LoginDTO loginDTO)
         {
             string? generatedToken = null;
 
-            if(string.IsNullOrEmpty(email) || string.IsNullOrEmpty(password))
+            if(string.IsNullOrEmpty(loginDTO.Email) || string.IsNullOrEmpty(loginDTO.Password))
             {
                 return generatedToken;
             }
 
-            if (email.EndsWith("@student.com"))
+            if (loginDTO.Email.EndsWith("@student.com"))
             {
-                Student? student = await _studentService.GetStudent(email, password);
+                Student? student = await _studentService.Get(loginDTO.Email, loginDTO.Password);
                 if (student != null)
                 {
                     generatedToken = _jwtGenerator.GenerateToken(student.User);
                 }
                 return generatedToken;
             }
-            else if (email.EndsWith("@teacher.com"))
+            else if (loginDTO.Email.EndsWith("@teacher.com"))
             {
-                throw new NotImplementedException("Login for teacher not implemented yet.");
+                Teacher? teacher = await _teacherService.Get(loginDTO.Email, loginDTO.Password);
+                if (teacher != null)
+                {
+                    generatedToken = _jwtGenerator.GenerateToken(teacher.User);
+                }
+                return generatedToken;
             }
 
             return generatedToken;
@@ -80,12 +68,13 @@ namespace Catalogo_Escolar_API.Services.AuthService
 
             if (registerDTO.RoleName == "student")
             {
-                await _studentService.AddStudent(newUser);
+                await _studentService.Add(newUser);
                 return true;
             }
-            else
+            else if(registerDTO.RoleName == "teacher")
             {
-                throw new NotImplementedException("Register for teacher not implemented yet");
+                await _teacherService.Add(newUser);
+                return true;
             }
 
             return false;

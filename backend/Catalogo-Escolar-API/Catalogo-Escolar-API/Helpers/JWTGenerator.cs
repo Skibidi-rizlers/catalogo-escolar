@@ -52,13 +52,13 @@ namespace Catalogo_Escolar_API.Helpers
         private static ClaimsIdentity GenerateClaims(User user)
         {
             string roleName = user.Email.EndsWith("@student.com") ? "student" : "admin";
-            var claims = new ClaimsIdentity(new[]
-            {
+            var claims = new ClaimsIdentity(
+            [
                 new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
                 new Claim(ClaimTypes.Name, user.FirstName),
                 new Claim(ClaimTypes.Email, user.Email),
                 new Claim(ClaimTypes.Role, roleName)
-            });
+            ]);
 
             return claims;
         }

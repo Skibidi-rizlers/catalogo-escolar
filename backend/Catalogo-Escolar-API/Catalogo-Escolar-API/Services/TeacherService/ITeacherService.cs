@@ -1,25 +1,25 @@
 ﻿namespace Catalogo_Escolar_API.Services.StudentService
 {
     /// <summary>
-    /// Interface for StudentService
+    /// Interface for TeacherService
     /// </summary>
-    public interface IStudentService
+    public interface ITeacherService
     {
         /// <summary>
-        /// Returns a student with the provided email and password.
+        /// Returns a teacher with the provided email and password.
         /// </summary>
         /// <param name="email">Email</param>
         /// <param name="password">Password</param>
-        /// <returns>Student if it exists</returns>
-        Task<Student?> Get(string email, string password);
+        /// <returns>Teacher if it exists</returns>
+        Task<Teacher?> Get(string email, string password);
         /// <summary>
-        /// Adds a new student to the database.
+        /// Adds a new teacher to the database.
         /// </summary>
-        /// <param name="data">User data of student</param>
+        /// <param name="data">User data of teacher</param>
         /// <returns>Result of operation</returns>
         Task<bool> Add(User data);
         /// <summary>
-        /// Changes the password of the student with the provided email.
+        /// Changes the password of the teacher with the provided email.
         /// </summary>
         /// <param name="email">Email</param>
         /// <param name="newPassword">New desired password</param>
