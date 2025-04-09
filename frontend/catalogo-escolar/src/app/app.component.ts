@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { Title } from '@angular/platform-browser';
 import { RouterOutlet } from '@angular/router';
 
 @Component({
@@ -8,5 +9,7 @@ import { RouterOutlet } from '@angular/router';
   styleUrl: './app.component.scss'
 })
 export class AppComponent {
-  title = 'catalogo-escolar';
+  constructor(private titleService: Title) {
+    this.titleService.setTitle('Index');
+  }
 }

@@ -3,3 +3,38 @@
 body {
     font-family: 'Roboto', sans-serif;
 }
+
+// Import Angular Material theme
+html,
+body {
+    height: 100%;
+}
+
+body {
+    margin: 0;
+    font-family: Roboto, "Helvetica Neue", sans-serif;
+}
+
+// Snackbar service
+.mat-simple-snackbar {
+    font-size: 1.2em;
+    color: white;
+}
+
+.snackbar-error {
+    --mdc-snackbar-container-color: red;
+    --mat-snack-bar-button-color: white;
+    text-align: center;
+}
+
+.snackbar-success {
+    --mdc-snackbar-container-color: green;
+    --mat-snack-bar-button-color: white;
+    text-align: center;
+}
+
+.snackbar-info {
+    --mdc-snackbar-container-color: blue;
+    --mat-snack-bar-button-color: white;
+    text-align: center;
+}
