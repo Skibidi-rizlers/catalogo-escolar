@@ -49,7 +49,7 @@ namespace Catalogo_Escolar_API.Services.AuthService
 
             if (email.EndsWith("@student.com"))
             {
-                Student? student = await _studentService.GetStudent(email, password);
+                User? student = await _studentService.GetStudent(email, password);
                 if (student != null)
                 {
                     generatedToken = _jwtGenerator.GenerateTokenForStudent(student);

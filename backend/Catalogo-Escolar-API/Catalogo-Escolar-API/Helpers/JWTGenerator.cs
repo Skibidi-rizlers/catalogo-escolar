@@ -25,7 +25,7 @@ namespace Catalogo_Escolar_API.Helpers
         /// </summary>
         /// <param name="user"></param>
         /// <returns>JWT</returns>
-        public string GenerateTokenForStudent(Student user)
+        public string GenerateTokenForStudent(User user)
         {
             var handler = new JwtSecurityTokenHandler();
             var key = Encoding.ASCII.GetBytes(_authSettings.SecretKey);
@@ -49,12 +49,12 @@ namespace Catalogo_Escolar_API.Helpers
         /// </summary>
         /// <param name="user"></param>
         /// <returns>Claims for the JWT</returns>
-        private static ClaimsIdentity GenerateClaimsForStudent(Student user)
+        private static ClaimsIdentity GenerateClaimsForStudent(User user)
         {
             var claims = new ClaimsIdentity(new[]
             {
                 new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
-                new Claim(ClaimTypes.Name, user.Name),
+                new Claim(ClaimTypes.Name, user.FirstName),
                 new Claim(ClaimTypes.Email, user.Email),
                 new Claim(ClaimTypes.Role, "Student")
             });

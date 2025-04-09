@@ -20,12 +20,11 @@
         /// </summary>
         /// <param name="student">Student</param>
         /// <returns>Result of operation</returns>
-        public Task<bool> AddStudent(Student student)
+        public Task<bool> AddStudent(User student)
         {
             try
             {
-                student.CreatedAt = DateTime.Now;
-                _context.Students.Add(student);
+                _context.Users.Add(student);
                 _context.SaveChangesAsync();
                 return Task.FromResult(true);
             }
@@ -45,11 +44,10 @@
         {
             try
             {
-                Student? student = _context.Students.FirstOrDefault(s => s.Email == email);
+                User? student = _context.Users.FirstOrDefault(s => s.Email == email);
                 if (student != null)
                 {
                     student.Password = newPassword;
-                    student.UpdatedAt = DateTime.Now;
                     _context.SaveChangesAsync();
                     return Task.FromResult(true);
                 }
@@ -68,9 +66,9 @@
         /// <param name="email">Email</param>
         /// <param name="password">Password</param>
         /// <returns>Student if it exists</returns>
-        public Task<Student?> GetStudent(string email, string password)
+        public Task<User?> GetStudent(string email, string password)
         {
-            Student? student = _context.Students.FirstOrDefault(s => s.Email == email && s.Password == password);
+            User? student = _context.Users.FirstOrDefault(s => s.Email == email && s.Password == password);
             return Task.FromResult(student);
         }
     }
