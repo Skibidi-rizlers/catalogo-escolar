@@ -4,6 +4,7 @@ import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angula
 import { AuthService } from '../_services/auth-service/auth.service';
 import { Title } from '@angular/platform-browser';
 import { SnackbarService } from '../_services/snackbar-service/snackbar.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-login',
@@ -15,7 +16,8 @@ export class LoginComponent {
   form: FormGroup;
   errorMessage: string = '';
 
-  constructor(private fb: FormBuilder, private authService: AuthService, private titleService: Title, private snackbarService : SnackbarService) {
+  constructor(private fb: FormBuilder, private authService: AuthService, private router: Router,
+    private titleService: Title, private snackbarService : SnackbarService) {
     this.form = this.fb.group({
       email: ['', [Validators.required, Validators.email]],
       password: ['', [Validators.required]],
@@ -26,14 +28,16 @@ export class LoginComponent {
 
   submit() {
     if (this.form.valid) {
-      this.authService.login(this.form.value.email, this.form.value.password).subscribe(
-        response => { 
-          console.log(response); 
+      this.authService.login(this.form.value.email, this.form.value.password).subscribe({
+        next: (JWT) => {
           this.snackbarService.success('Login successful!');
-        }, onerror => {
+          this.router.navigate(['/student-dashboard']);
+        },
+        error: (error) => {
           console.error(onerror);
           this.snackbarService.error('Login failed! Please check your credentials.');
-        });
+        }
+      });
     }
   }
 }
