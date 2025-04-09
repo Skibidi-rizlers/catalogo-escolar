@@ -7,9 +7,9 @@ export class JwtParser {
         this.token = token;
     }
 
-    public getUser(): User | null {
+    public getUser(): User | undefined {
         try {
-            const decoded : any = jwtDecode(this.token);
+            const decoded: any = jwtDecode(this.token);
             const user: User = {
                 name: decoded.unique_name,
                 email: decoded.email,
@@ -19,7 +19,7 @@ export class JwtParser {
             return user;
         } catch (error) {
             console.error("Invalid JWT:", error);
-            return null;
+            return undefined;
         }
     }
 }
