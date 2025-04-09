@@ -1,4 +1,6 @@
-﻿namespace Catalogo_Escolar_API.Services.AuthService
+﻿using Catalogo_Escolar_API.Model.DTO;
+
+namespace Catalogo_Escolar_API.Services.AuthService
 {
     /// <summary>
     /// Interface for AuthService
@@ -21,5 +23,7 @@
         /// <param name="newPassword">New desire password of user</param>
         /// <returns>Result of operation</returns>
         Task<bool> ChangePassword(string email, string oldPassword, string newPassword);
+
+        Task<bool> Register(RegisterDTO registerDTO);
     }
 }

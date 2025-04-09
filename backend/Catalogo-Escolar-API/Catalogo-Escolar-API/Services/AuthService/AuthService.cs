@@ -1,4 +1,5 @@
 ﻿using Catalogo_Escolar_API.Helpers;
+using Catalogo_Escolar_API.Model.DTO;
 using Catalogo_Escolar_API.Services.StudentService;
 
 namespace Catalogo_Escolar_API.Services.AuthService
@@ -49,10 +50,10 @@ namespace Catalogo_Escolar_API.Services.AuthService
 
             if (email.EndsWith("@student.com"))
             {
-                User? student = await _studentService.GetStudent(email, password);
+                Student? student = await _studentService.GetStudent(email, password);
                 if (student != null)
                 {
-                    generatedToken = _jwtGenerator.GenerateTokenForStudent(student);
+                    generatedToken = _jwtGenerator.GenerateToken(student.User);
                 }
                 return generatedToken;
             }
@@ -62,6 +63,32 @@ namespace Catalogo_Escolar_API.Services.AuthService
             }
 
             return generatedToken;
+        }
+
+        public async Task<bool> Register(RegisterDTO registerDTO)
+        {
+            if (registerDTO.RoleName != "student" && registerDTO.RoleName != "teacher")
+                return false;
+
+            User newUser = new()
+            {
+                FirstName = registerDTO.FirstName,
+                LastName = registerDTO.LastName,
+                Password = registerDTO.Password,
+                Email = EmailFormatter.GetEmail(registerDTO)
+            };
+
+            if (registerDTO.RoleName == "student")
+            {
+                await _studentService.AddStudent(newUser);
+                return true;
+            }
+            else
+            {
+                throw new NotImplementedException("Register for teacher not implemented yet");
+            }
+
+            return false;
         }
     }
 }

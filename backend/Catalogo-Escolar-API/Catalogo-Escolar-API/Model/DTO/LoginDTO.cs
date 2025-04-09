@@ -1,9 +1,9 @@
-﻿namespace Catalogo_Escolar_API.Model
+﻿namespace Catalogo_Escolar_API.Model.DTO
 {
     /// <summary>
     /// Represents the schema of the login data received on the Auth Login endpoint.
     /// </summary>
-    public class LoginModel
+    public class LoginDTO
     {
         /// <summary>
         /// Email of user

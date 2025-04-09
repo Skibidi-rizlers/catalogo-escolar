@@ -1,9 +1,9 @@
-﻿namespace Catalogo_Escolar_API.Model
+﻿namespace Catalogo_Escolar_API.Model.DTO
 {
     /// <summary>
     /// Represents the schema of the change password data received on the Auth ChangePassword endpoint.
     /// </summary>
-    public class ChangePasswordModel
+    public class ChangePasswordDTO
     {
         /// <summary>
         /// Current password of user

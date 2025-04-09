@@ -21,11 +21,11 @@ namespace Catalogo_Escolar_API.Helpers
             _authSettings = authSettings;
         }
         /// <summary>
-        /// Generates a JWT token for a student.
+        /// Generates a JWT token for a user.
         /// </summary>
         /// <param name="user"></param>
         /// <returns>JWT</returns>
-        public string GenerateTokenForStudent(User user)
+        public string GenerateToken(User user)
         {
             var handler = new JwtSecurityTokenHandler();
             var key = Encoding.ASCII.GetBytes(_authSettings.SecretKey);
@@ -35,7 +35,7 @@ namespace Catalogo_Escolar_API.Helpers
 
             var tokenDescriptor = new SecurityTokenDescriptor
             {
-                Subject = GenerateClaimsForStudent(user),
+                Subject = GenerateClaims(user),
                 Expires = DateTime.UtcNow.AddMinutes(15),
                 SigningCredentials = credentials,
             };
@@ -49,14 +49,15 @@ namespace Catalogo_Escolar_API.Helpers
         /// </summary>
         /// <param name="user"></param>
         /// <returns>Claims for the JWT</returns>
-        private static ClaimsIdentity GenerateClaimsForStudent(User user)
+        private static ClaimsIdentity GenerateClaims(User user)
         {
+            string roleName = user.Email.EndsWith("@student.com") ? "student" : "admin";
             var claims = new ClaimsIdentity(new[]
             {
                 new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
                 new Claim(ClaimTypes.Name, user.FirstName),
                 new Claim(ClaimTypes.Email, user.Email),
-                new Claim(ClaimTypes.Role, "Student")
+                new Claim(ClaimTypes.Role, roleName)
             });
 
             return claims;

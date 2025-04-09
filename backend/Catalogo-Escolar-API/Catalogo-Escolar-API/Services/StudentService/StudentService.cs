@@ -1,4 +1,6 @@
-﻿namespace Catalogo_Escolar_API.Services.StudentService
+﻿using Microsoft.EntityFrameworkCore;
+
+namespace Catalogo_Escolar_API.Services.StudentService
 {
     /// <summary>
     /// Service for managing students
@@ -18,13 +20,14 @@
         /// <summary>
         /// Adds a new student to the database.
         /// </summary>
-        /// <param name="student">Student</param>
+        /// <param name="data">Data of student</param>
         /// <returns>Result of operation</returns>
-        public Task<bool> AddStudent(User student)
+        public Task<bool> AddStudent(User data)
         {
             try
             {
-                _context.Users.Add(student);
+                var user = _context.Users.Add(data);
+                _context.Students.Add(new Student() { UserId = user.Entity.Id});
                 _context.SaveChangesAsync();
                 return Task.FromResult(true);
             }
@@ -44,10 +47,10 @@
         {
             try
             {
-                User? student = _context.Users.FirstOrDefault(s => s.Email == email);
+                Student? student = _context.Students.Include(s => s.User).FirstOrDefault(s => s.User.Email == email);
                 if (student != null)
                 {
-                    student.Password = newPassword;
+                    student.User.Password = newPassword;
                     _context.SaveChangesAsync();
                     return Task.FromResult(true);
                 }
@@ -66,9 +69,9 @@
         /// <param name="email">Email</param>
         /// <param name="password">Password</param>
         /// <returns>Student if it exists</returns>
-        public Task<User?> GetStudent(string email, string password)
+        public Task<Student?> GetStudent(string email, string password)
         {
-            User? student = _context.Users.FirstOrDefault(s => s.Email == email && s.Password == password);
+            Student? student = _context.Students.Include(s => s.User).FirstOrDefault(s => s.User.Email == email && s.User.Password == password);
             return Task.FromResult(student);
         }
     }

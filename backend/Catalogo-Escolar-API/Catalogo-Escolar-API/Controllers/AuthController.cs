@@ -1,4 +1,4 @@
-﻿using Catalogo_Escolar_API.Model;
+﻿using Catalogo_Escolar_API.Model.DTO;
 using Catalogo_Escolar_API.Services.AuthService;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -34,7 +34,7 @@ namespace Catalogo_Escolar_API.Controllers
         [ProducesResponseType(401)]
         [ProducesResponseType(500)]
         [AllowAnonymous]
-        public async Task<ActionResult<string>> Login([FromBody] LoginModel model)
+        public async Task<ActionResult<string>> Login([FromBody] LoginDTO model)
         {
             try
             {
@@ -63,11 +63,12 @@ namespace Catalogo_Escolar_API.Controllers
         [ProducesResponseType(400)]
         [ProducesResponseType(422)]
         [AllowAnonymous]
-        public async Task<ActionResult<bool>> Register()
+        public async Task<ActionResult<bool>> Register([FromBody] RegisterDTO model)
         {
             try
             {
-                return Ok(true);
+                var result = await _authService.Register(model);
+                return Ok(result);
             }
             catch (Exception ex)
             {
@@ -87,7 +88,7 @@ namespace Catalogo_Escolar_API.Controllers
         [ProducesResponseType(200)]
         [ProducesResponseType(400)]
         [ProducesResponseType(422)]
-        public async Task<ActionResult<bool>> ChangePassword([FromBody] ChangePasswordModel model)
+        public async Task<ActionResult<bool>> ChangePassword([FromBody] ChangePasswordDTO model)
         {
             try
             {

@@ -11,13 +11,13 @@
         /// <param name="email">Email</param>
         /// <param name="password">Password</param>
         /// <returns>Student if it exists</returns>
-        Task<User?> GetStudent(string email, string password);
+        Task<Student?> GetStudent(string email, string password);
         /// <summary>
         /// Adds a new student to the database.
         /// </summary>
-        /// <param name="student">Student</param>
+        /// <param name="data">User data of student</param>
         /// <returns>Result of operation</returns>
-        Task<bool> AddStudent(User student);
+        Task<bool> AddStudent(User data);
         /// <summary>
         /// Changes the password of the student with the provided email.
         /// </summary>
