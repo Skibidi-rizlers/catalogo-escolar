@@ -11,7 +11,7 @@
         /// <param name="email">Email</param>
         /// <param name="password">Password</param>
         /// <returns>Teacher if it exists</returns>
-        Task<Teacher?> Get(string email, string password);
+        Task<Teacher?> Get(string email);
         /// <summary>
         /// Adds a new teacher to the database.
         /// </summary>
