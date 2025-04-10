@@ -1,5 +1,6 @@
-﻿using Catalogo_Escolar_API.Model;
-using Microsoft.AspNetCore.Http.HttpResults;
+﻿using Catalogo_Escolar_API.Model.DTO;
+using Catalogo_Escolar_API.Services.AuthService;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Catalogo_Escolar_API.Controllers
@@ -9,12 +10,14 @@ namespace Catalogo_Escolar_API.Controllers
     /// </summary>
     [ApiController]
     [Route("auth")]
+    [Authorize]
     public class AuthController : ControllerBase
     {
+        private readonly IAuthService _authService;
         /// <summary>
         /// Represents the default constructor of the <see cref="AuthController"/> class.
         /// </summary>
-        public AuthController() { }
+        public AuthController(IAuthService authService) { _authService = authService; }
 
         /// <summary>
         /// Authenticates the user and generates a JWT token.
@@ -23,20 +26,28 @@ namespace Catalogo_Escolar_API.Controllers
         /// <returns>A JWT token if authentication is successful.</returns>
         /// <response code="200">Authentication successful.</response>
         /// <response code="400">Data in body is not correct.</response>
-        /// <response code="422">Could not login.</response>
+        /// <response code="401">Could not log in user.</response>
+        /// <response code="500">Server side error.</response>
         [HttpPost("login")]
         [ProducesResponseType(200)]
         [ProducesResponseType(400)]
-        [ProducesResponseType(422)]
-        public async Task<ActionResult<string>> Login([FromBody] LoginModel model)
+        [ProducesResponseType(401)]
+        [ProducesResponseType(500)]
+        [AllowAnonymous]
+        public async Task<ActionResult<string>> Login([FromBody] LoginDTO model)
         {
             try
             {
-                return Ok("This is your JWT");
+                string? token = await _authService.Login(model);
+                if (string.IsNullOrEmpty(token))
+                {
+                    return Unauthorized("Failed to login user.");
+                }
+                return Ok(token);
             }
             catch (Exception ex)
             {
-                return UnprocessableEntity("Failed to log in user.");
+                return StatusCode(500, "Internal server error.");
             }
         }
 
@@ -51,11 +62,13 @@ namespace Catalogo_Escolar_API.Controllers
         [ProducesResponseType(200)]
         [ProducesResponseType(400)]
         [ProducesResponseType(422)]
-        public async Task<ActionResult<bool>> Register()
+        [AllowAnonymous]
+        public async Task<ActionResult<bool>> Register([FromBody] RegisterDTO model)
         {
             try
             {
-                return Ok(true);
+                var result = await _authService.Register(model);
+                return Ok(result);
             }
             catch (Exception ex)
             {
@@ -75,7 +88,7 @@ namespace Catalogo_Escolar_API.Controllers
         [ProducesResponseType(200)]
         [ProducesResponseType(400)]
         [ProducesResponseType(422)]
-        public async Task<ActionResult<bool>> ChangePassword([FromBody] ChangePasswordModel model)
+        public async Task<ActionResult<bool>> ChangePassword([FromBody] ChangePasswordDTO model)
         {
             try
             {

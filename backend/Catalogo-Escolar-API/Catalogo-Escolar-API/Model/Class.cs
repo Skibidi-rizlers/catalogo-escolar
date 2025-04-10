@@ -1,9 +1,12 @@
 using System.Diagnostics;
-public class Student
+
+public class Class
 {
     public int Id { get; set; }
-    public int UserId { get; set; }
-    public User User { get; set; }
+    public string Name { get; set; }
+
+    public int TeacherId { get; set; }
+    public Teacher Teacher { get; set; }
 
     public ICollection<StudentClass> StudentClasses { get; set; }
     public ICollection<Grade> Grades { get; set; }
