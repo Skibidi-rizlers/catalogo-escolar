@@ -3,7 +3,7 @@
     /// <summary>
     /// Represents the schema of the login data received on the Auth Login endpoint.
     /// </summary>
-    public class LoginDTO
+    public class LoginPayload
     {
         /// <summary>
         /// Email of user

@@ -3,7 +3,7 @@
     /// <summary>
     /// Represents the schema of the register data received on the Auth Register endpoint.
     /// </summary>
-    public class RegisterDTO
+    public class RegisterPayload
     {
         /// <summary>
         /// First name of new user.

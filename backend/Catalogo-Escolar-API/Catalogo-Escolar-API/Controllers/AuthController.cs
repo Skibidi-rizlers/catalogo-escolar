@@ -38,7 +38,7 @@ namespace Catalogo_Escolar_API.Controllers
         [ProducesResponseType(401)]
         [ProducesResponseType(500)]
         [AllowAnonymous]
-        public async Task<ActionResult<string>> Login([FromBody] LoginDTO model)
+        public async Task<ActionResult<string>> Login([FromBody] LoginPayload model)
         {
             try
             {
@@ -67,7 +67,7 @@ namespace Catalogo_Escolar_API.Controllers
         [ProducesResponseType(400)]
         [ProducesResponseType(422)]
         [AllowAnonymous]
-        public async Task<ActionResult<bool>> Register([FromBody] RegisterDTO model)
+        public async Task<ActionResult<string?>> Register([FromBody] RegisterPayload model)
         {
             try
             {
@@ -92,7 +92,7 @@ namespace Catalogo_Escolar_API.Controllers
         [ProducesResponseType(200)]
         [ProducesResponseType(400)]
         [ProducesResponseType(422)]
-        public async Task<ActionResult<bool>> ChangePassword([FromBody] ChangePasswordDTO model)
+        public async Task<ActionResult<bool>> ChangePassword([FromBody] ChangePasswordPayload model)
         {
             try
             {

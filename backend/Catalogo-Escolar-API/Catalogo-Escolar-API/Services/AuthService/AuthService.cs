@@ -1,6 +1,7 @@
 ﻿using Catalogo_Escolar_API.Helpers;
 using Catalogo_Escolar_API.Model.DTO;
 using Catalogo_Escolar_API.Services.StudentService;
+using Catalogo_Escolar_API.Services.UniqueService;
 using Microsoft.AspNetCore.Identity;
 
 namespace Catalogo_Escolar_API.Services.AuthService
@@ -10,13 +11,16 @@ namespace Catalogo_Escolar_API.Services.AuthService
         private readonly PasswordHasher<User> _passwordHasher;
         private readonly IStudentService _studentService;
         private readonly ITeacherService _teacherService;
+        private readonly IUniqueService _uniqueService;
         private readonly JWTGenerator _jwtGenerator;
 
-        public AuthService(IStudentService studentService, ITeacherService teacherService, JWTGenerator jWTGenerator)
+        public AuthService(IStudentService studentService, ITeacherService teacherService, JWTGenerator jWTGenerator,
+            IUniqueService uniqueService)
         {
             _studentService = studentService;
             _teacherService = teacherService;
             _jwtGenerator = jWTGenerator;
+            _uniqueService = uniqueService;
             _passwordHasher = new();
         }
 
@@ -62,7 +66,7 @@ namespace Catalogo_Escolar_API.Services.AuthService
             return false;
         }
 
-        public async Task<string?> Login(LoginDTO loginDTO)
+        public async Task<string?> Login(LoginPayload loginDTO)
         {
             string? generatedToken = null;
 
@@ -101,32 +105,32 @@ namespace Catalogo_Escolar_API.Services.AuthService
             return generatedToken;
         }
 
-        public async Task<bool> Register(RegisterDTO registerDTO)
+        public async Task<string?> Register(RegisterPayload registerDTO)
         {
             if (registerDTO.RoleName != "student" && registerDTO.RoleName != "teacher")
-                return false;
+                return null;
 
             User newUser = new()
             {
                 FirstName = registerDTO.FirstName,
                 LastName = registerDTO.LastName,
                 Password = registerDTO.Password,
-                Email = EmailFormatter.GetEmail(registerDTO)
+                Email = EmailFormatter.GenerateUniqueEmail(registerDTO, email => _uniqueService.EmailExists(email))
             };
 
             newUser.Password = _passwordHasher.HashPassword(newUser, registerDTO.Password);
             if (registerDTO.RoleName == "student")
             {
                 await _studentService.Add(newUser);
-                return true;
+                return newUser.Email;
             }
             else if(registerDTO.RoleName == "teacher")
             {
                 await _teacherService.Add(newUser);
-                return true;
+                return newUser.Email;
             }
 
-            return false;
+            return null;
         }
     }
 }
