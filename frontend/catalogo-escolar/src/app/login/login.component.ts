@@ -7,6 +7,7 @@ import { SnackbarService } from '../_services/snackbar-service/snackbar.service'
 import { Router } from '@angular/router';
 import { StorageService } from '../_services/storage-service/storage.service';
 import { map } from 'rxjs';
+import { AuthState } from '../auth.state';
 
 @Component({
   selector: 'app-login',
@@ -19,7 +20,7 @@ export class LoginComponent implements OnInit {
   errorMessage: string = '';
 
   constructor(private fb: FormBuilder, private authService: AuthService, private router: Router, private storageService: StorageService,
-    private titleService: Title, private snackbarService: SnackbarService) {
+    private titleService: Title, private snackbarService: SnackbarService, private authState : AuthState) {
     this.form = this.fb.group({
       email: ['', [Validators.required, Validators.email]],
       password: ['', [Validators.required]],
@@ -28,7 +29,7 @@ export class LoginComponent implements OnInit {
     this.titleService.setTitle('Login');
   }
   ngOnInit(): void {
-    this.storageService.getUser().pipe(
+    this.authState.user.pipe(
       map(user => {
         if (user?.role === 'student') {
           this.router.navigate(['/student-dashboard']);
@@ -43,7 +44,7 @@ export class LoginComponent implements OnInit {
     if (this.form.valid) {
       this.authService.login(this.form.value.email, this.form.value.password).subscribe({
         next: (JWT) => {
-          this.storageService.saveToken(JWT);
+          this.authState.setUser(JWT);
           this.snackbarService.success('Login successful!');
           this.router.navigate(['/student-dashboard']);
         },

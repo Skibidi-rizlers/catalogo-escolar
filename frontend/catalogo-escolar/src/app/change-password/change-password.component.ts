@@ -4,8 +4,8 @@ import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } 
 import { Title } from '@angular/platform-browser';
 import { AuthService } from '../_services/auth-service/auth.service';
 import { SnackbarService } from '../_services/snackbar-service/snackbar.service';
-import { StorageService } from '../_services/storage-service/storage.service';
 import { Router } from '@angular/router';
+import { AuthState } from '../auth.state';
 
 @Component({
   selector: 'app-change-password',
@@ -17,7 +17,7 @@ export class ChangePasswordComponent {
   form: FormGroup;
 
   constructor(private fb: FormBuilder, private titleService: Title, private authService: AuthService, private snackbarService: SnackbarService,
-    private storageService : StorageService, private router : Router
+    private authState : AuthState, private router : Router
   ) {
     this.form = this.fb.group({
       old_password: ['', Validators.required],
@@ -44,8 +44,7 @@ export class ChangePasswordComponent {
           console.log(result);
           if (result === true) {
             this.snackbarService.success('Operation successful! Please login again');
-            this.storageService.clean();
-            this.router.navigate(["/login"]);
+            this.authState.logout();
           } else {
             this.snackbarService.error("Operation failure");
           }
