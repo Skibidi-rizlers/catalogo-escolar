@@ -22,7 +22,44 @@ namespace Catalogo_Escolar_API.Services.AuthService
 
         public async Task<bool> ChangePassword(string email, string oldPassword, string newPassword)
         {
-            throw new NotImplementedException("Change password not implemented yet.");
+            if (string.IsNullOrEmpty(email) || string.IsNullOrEmpty(oldPassword) || string.IsNullOrEmpty(newPassword)) 
+            { 
+                return false; 
+            }
+
+            if(oldPassword == newPassword)
+            {
+                return false;
+            }
+
+            if (email.EndsWith("@student.com"))
+            {
+                Student? student = await _studentService.Get(email);
+                if (student != null)
+                {
+                    var result = _passwordHasher.VerifyHashedPassword(student.User, student.User.Password, oldPassword);
+                    if (result == PasswordVerificationResult.Success)
+                    {
+                        return await _studentService.ChangePassword(email, newPassword);
+                    }
+                }
+                return false;
+            }
+            else if (email.EndsWith("@teacher.com"))
+            {
+                Teacher? teacher = await _teacherService.Get(email);
+                if (teacher != null)
+                {
+                    var result = _passwordHasher.VerifyHashedPassword(teacher.User, teacher.User.Password, oldPassword);
+                    if (result == PasswordVerificationResult.Success)
+                    {
+                        return await _teacherService.ChangePassword(email, newPassword);
+                    }
+                    return false;
+                }
+            }
+
+            return false;
         }
 
         public async Task<string?> Login(LoginDTO loginDTO)

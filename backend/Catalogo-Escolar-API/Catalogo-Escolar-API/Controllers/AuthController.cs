@@ -92,7 +92,15 @@ namespace Catalogo_Escolar_API.Controllers
         {
             try
             {
-                return Ok(true);
+                var email = User.FindFirst("email")?.Value;
+
+                if (string.IsNullOrEmpty(email))
+                {
+                    return BadRequest("User not authenticated.");
+                }
+
+                var result = await _authService.ChangePassword(email, model.OldPassword, model.NewPassword);
+                return Ok(result);
             }
             catch (Exception ex)
             {
