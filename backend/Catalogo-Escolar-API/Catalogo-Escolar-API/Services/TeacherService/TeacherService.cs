@@ -15,8 +15,9 @@ namespace Catalogo_Escolar_API.Services.TeacherService
             try
             {
                 var user = _context.Users.Add(data);
+                _context.SaveChanges();
                 _context.Teachers.Add(new Teacher() { UserId = user.Entity.Id });
-                _context.SaveChangesAsync();
+                _context.SaveChanges();
                 return Task.FromResult(true);
             }
             catch (Exception ex)
@@ -34,7 +35,7 @@ namespace Catalogo_Escolar_API.Services.TeacherService
                 if (teacher != null)
                 {
                     teacher.User.Password = newPassword;
-                    _context.SaveChangesAsync();
+                    _context.SaveChanges();
                     return Task.FromResult(true);
                 }
                 return Task.FromResult(false);
@@ -46,9 +47,9 @@ namespace Catalogo_Escolar_API.Services.TeacherService
             }
         }
 
-        public Task<Teacher?> Get(string email, string password)
+        public Task<Teacher?> Get(string email)
         {
-            Teacher? student = _context.Teachers.Include(s => s.User).FirstOrDefault(s => s.User.Email == email && s.User.Password == password);
+            Teacher? student = _context.Teachers.Include(s => s.User).FirstOrDefault(s => s.User.Email == email);
             return Task.FromResult(student);
         }
     }

@@ -1,11 +1,13 @@
 ﻿using Catalogo_Escolar_API.Helpers;
 using Catalogo_Escolar_API.Model.DTO;
 using Catalogo_Escolar_API.Services.StudentService;
+using Microsoft.AspNetCore.Identity;
 
 namespace Catalogo_Escolar_API.Services.AuthService
 {
     public class AuthService : IAuthService
     {
+        private readonly PasswordHasher<User> _passwordHasher;
         private readonly IStudentService _studentService;
         private readonly ITeacherService _teacherService;
         private readonly JWTGenerator _jwtGenerator;
@@ -15,6 +17,7 @@ namespace Catalogo_Escolar_API.Services.AuthService
             _studentService = studentService;
             _teacherService = teacherService;
             _jwtGenerator = jWTGenerator;
+            _passwordHasher = new();
         }
 
         public async Task<bool> ChangePassword(string email, string oldPassword, string newPassword)
@@ -33,19 +36,27 @@ namespace Catalogo_Escolar_API.Services.AuthService
 
             if (loginDTO.Email.EndsWith("@student.com"))
             {
-                Student? student = await _studentService.Get(loginDTO.Email, loginDTO.Password);
+                Student? student = await _studentService.Get(loginDTO.Email);
                 if (student != null)
                 {
-                    generatedToken = _jwtGenerator.GenerateToken(student.User);
+                    var result = _passwordHasher.VerifyHashedPassword(student.User, student.User.Password, loginDTO.Password);
+                    if (result == PasswordVerificationResult.Success)
+                    {
+                        generatedToken = _jwtGenerator.GenerateToken(student.User);
+                    }
                 }
                 return generatedToken;
             }
             else if (loginDTO.Email.EndsWith("@teacher.com"))
             {
-                Teacher? teacher = await _teacherService.Get(loginDTO.Email, loginDTO.Password);
+                Teacher? teacher = await _teacherService.Get(loginDTO.Email);
                 if (teacher != null)
                 {
-                    generatedToken = _jwtGenerator.GenerateToken(teacher.User);
+                    var result = _passwordHasher.VerifyHashedPassword(teacher.User, teacher.User.Password, loginDTO.Password);
+                    if (result == PasswordVerificationResult.Success)
+                    {
+                        generatedToken = _jwtGenerator.GenerateToken(teacher.User);
+                    }
                 }
                 return generatedToken;
             }
@@ -66,6 +77,7 @@ namespace Catalogo_Escolar_API.Services.AuthService
                 Email = EmailFormatter.GetEmail(registerDTO)
             };
 
+            newUser.Password = _passwordHasher.HashPassword(newUser, registerDTO.Password);
             if (registerDTO.RoleName == "student")
             {
                 await _studentService.Add(newUser);
