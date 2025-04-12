@@ -2,6 +2,8 @@
 using Catalogo_Escolar_API.Services.AuthService;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using System.Security.Claims;
 
 namespace Catalogo_Escolar_API.Controllers
 {
@@ -17,7 +19,9 @@ namespace Catalogo_Escolar_API.Controllers
         /// <summary>
         /// Represents the default constructor of the <see cref="AuthController"/> class.
         /// </summary>
-        public AuthController(IAuthService authService) { _authService = authService; }
+        public AuthController(IAuthService authService) { 
+            _authService = authService;
+        }
 
         /// <summary>
         /// Authenticates the user and generates a JWT token.
@@ -92,7 +96,7 @@ namespace Catalogo_Escolar_API.Controllers
         {
             try
             {
-                var email = User.FindFirst("email")?.Value;
+                var email = User.FindFirst(ClaimTypes.Email)?.Value;
 
                 if (string.IsNullOrEmpty(email))
                 {

@@ -21,18 +21,23 @@ export class StorageService {
   }
 
   public getUser(): Observable<User | undefined> {
-    const user = window.sessionStorage.getItem(AUTH_TOKEN);
-    if (user) {
-      let decoder = new JwtParser(user);
+    const token = window.sessionStorage.getItem(AUTH_TOKEN);
+    if (token) {
+      let decoder = new JwtParser(token);
       return of(decoder.getUser());
     }
   
     return of(undefined);
   }
 
+  public getToken() : string | null{
+    const token = window.sessionStorage.getItem(AUTH_TOKEN);
+    return token;
+  }
+
   public isLoggedIn(): boolean {
-    const user = window.sessionStorage.getItem(AUTH_TOKEN);
-    if (user) {
+    const token = window.sessionStorage.getItem(AUTH_TOKEN);
+    if (token) {
       return true;
     }
 

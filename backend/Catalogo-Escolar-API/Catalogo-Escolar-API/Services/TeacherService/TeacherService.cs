@@ -1,4 +1,5 @@
 ﻿using Catalogo_Escolar_API.Services.StudentService;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
 namespace Catalogo_Escolar_API.Services.TeacherService
@@ -6,9 +7,11 @@ namespace Catalogo_Escolar_API.Services.TeacherService
     public class TeacherService : ITeacherService
     {
         private readonly SchoolContext _context;
+        private readonly PasswordHasher<User> _passwordHasher;
         public TeacherService(SchoolContext context)
         {
             _context = context;
+            _passwordHasher = new();
         }
         public Task<bool> Add(User data)
         {
@@ -34,7 +37,7 @@ namespace Catalogo_Escolar_API.Services.TeacherService
                 Teacher? teacher = _context.Teachers.Include(s => s.User).FirstOrDefault(s => s.User.Email == email);
                 if (teacher != null)
                 {
-                    teacher.User.Password = newPassword;
+                    teacher.User.Password = _passwordHasher.HashPassword(teacher.User, newPassword);
                     _context.SaveChanges();
                     return Task.FromResult(true);
                 }
