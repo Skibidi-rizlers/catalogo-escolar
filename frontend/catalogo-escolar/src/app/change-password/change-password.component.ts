@@ -2,6 +2,10 @@ import { NgIf } from '@angular/common';
 import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Title } from '@angular/platform-browser';
+import { AuthService } from '../_services/auth-service/auth.service';
+import { SnackbarService } from '../_services/snackbar-service/snackbar.service';
+import { Router } from '@angular/router';
+import { AuthState } from '../auth.state';
 
 @Component({
   selector: 'app-change-password',
@@ -10,20 +14,22 @@ import { Title } from '@angular/platform-browser';
   styleUrl: './change-password.component.scss'
 })
 export class ChangePasswordComponent {
-  credentials: FormGroup;
+  form: FormGroup;
 
-  constructor(private fb: FormBuilder, private titleService: Title) {
-    this.credentials = this.fb.group({
+  constructor(private fb: FormBuilder, private titleService: Title, private authService: AuthService, private snackbarService: SnackbarService,
+    private authState : AuthState, private router : Router
+  ) {
+    this.form = this.fb.group({
       old_password: ['', Validators.required],
-      password: ['', [Validators.required, Validators.minLength(6)]],
+      password: ['', [Validators.required]],
       password_confirmation: ['', Validators.required]
     }, { validators: this.passwordsMatch });
     this.titleService.setTitle('Change Password');
   }
 
-  get oldPassword() { return this.credentials.get('old_password'); }
-  get newPassword() { return this.credentials.get('password'); }
-  get confirmPassword() { return this.credentials.get('password_confirmation'); }
+  get oldPassword() { return this.form.get('old_password'); }
+  get newPassword() { return this.form.get('password'); }
+  get confirmPassword() { return this.form.get('password_confirmation'); }
 
   passwordsMatch(group: FormGroup) {
     const password = group.get('password')?.value;
@@ -32,9 +38,25 @@ export class ChangePasswordComponent {
   }
 
   onSubmit() {
+    if (this.form.valid) {
+      this.authService.changePassword(this.form.value.old_password, this.form.value.password).subscribe({
+        next: (result) => {
+          console.log(result);
+          if (result === true) {
+            this.snackbarService.success('Operation successful! Please login again');
+            this.authState.logout();
+          } else {
+            this.snackbarService.error("Operation failure");
+          }
+        },
+        error: (error) => {
+          this.snackbarService.error(error.message);
+        }
+      });
+    }
   }
 
   onReset() {
-    this.credentials.reset();
+    this.form.reset();
   }
 }

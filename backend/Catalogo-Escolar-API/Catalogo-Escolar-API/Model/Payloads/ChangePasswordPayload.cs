@@ -3,7 +3,7 @@
     /// <summary>
     /// Represents the schema of the change password data received on the Auth ChangePassword endpoint.
     /// </summary>
-    public class ChangePasswordDTO
+    public class ChangePasswordPayload
     {
         /// <summary>
         /// Current password of user

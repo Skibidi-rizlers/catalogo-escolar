@@ -51,7 +51,7 @@ namespace Catalogo_Escolar_API.Helpers
         /// <returns>Claims for the JWT</returns>
         private static ClaimsIdentity GenerateClaims(User user)
         {
-            string roleName = user.Email.EndsWith("@student.com") ? "student" : "admin";
+            string roleName = user.Email.EndsWith("@student.com") ? "student" : "teacher";
             var claims = new ClaimsIdentity(
             [
                 new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),

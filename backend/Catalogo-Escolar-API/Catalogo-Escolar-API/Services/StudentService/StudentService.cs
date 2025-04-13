@@ -1,14 +1,17 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 
 namespace Catalogo_Escolar_API.Services.StudentService
 {
     public class StudentService : IStudentService
     {
         private readonly SchoolContext _context;
+        private readonly PasswordHasher<User> _passwordHasher;
 
         public StudentService(SchoolContext context)
         {
             _context = context;
+            _passwordHasher = new();
         }
 
         public Task<bool> Add(User data)
@@ -35,7 +38,7 @@ namespace Catalogo_Escolar_API.Services.StudentService
                 Student? student = _context.Students.Include(s => s.User).FirstOrDefault(s => s.User.Email == email);
                 if (student != null)
                 {
-                    student.User.Password = newPassword;
+                    student.User.Password = _passwordHasher.HashPassword(student.User, newPassword);
                     _context.SaveChanges();
                     return Task.FromResult(true);
                 }

@@ -1,0 +1,42 @@
+header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 20px;
+    background-color: #fff;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  }
+  
+  .menu-icon {
+    font-size: 1.5rem;
+    cursor: pointer;
+    color: #333;
+  }
+  
+  .menu-icon:hover {
+    color: #3498db;
+  }
+  
+  .nav-menu {
+    display: flex;
+    gap: 15px;
+  }
+  
+  .nav-menu li {
+    list-style: none;
+    font-size: 1rem;
+    cursor: pointer;
+    color: #333;
+    transition: color 0.3s ease;
+  }
+  
+  .nav-menu li:hover {
+    color: #3498db;
+  }
+  
+  .nav-menu a {
+    text-decoration: none;
+    color: inherit;
+  }
+  
+  

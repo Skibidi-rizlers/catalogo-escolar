@@ -2,6 +2,8 @@
 using Catalogo_Escolar_API.Services.AuthService;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using System.Security.Claims;
 
 namespace Catalogo_Escolar_API.Controllers
 {
@@ -17,7 +19,9 @@ namespace Catalogo_Escolar_API.Controllers
         /// <summary>
         /// Represents the default constructor of the <see cref="AuthController"/> class.
         /// </summary>
-        public AuthController(IAuthService authService) { _authService = authService; }
+        public AuthController(IAuthService authService) { 
+            _authService = authService;
+        }
 
         /// <summary>
         /// Authenticates the user and generates a JWT token.
@@ -34,7 +38,7 @@ namespace Catalogo_Escolar_API.Controllers
         [ProducesResponseType(401)]
         [ProducesResponseType(500)]
         [AllowAnonymous]
-        public async Task<ActionResult<string>> Login([FromBody] LoginDTO model)
+        public async Task<ActionResult<string>> Login([FromBody] LoginPayload model)
         {
             try
             {
@@ -63,7 +67,7 @@ namespace Catalogo_Escolar_API.Controllers
         [ProducesResponseType(400)]
         [ProducesResponseType(422)]
         [AllowAnonymous]
-        public async Task<ActionResult<bool>> Register([FromBody] RegisterDTO model)
+        public async Task<ActionResult<string?>> Register([FromBody] RegisterPayload model)
         {
             try
             {
@@ -88,11 +92,19 @@ namespace Catalogo_Escolar_API.Controllers
         [ProducesResponseType(200)]
         [ProducesResponseType(400)]
         [ProducesResponseType(422)]
-        public async Task<ActionResult<bool>> ChangePassword([FromBody] ChangePasswordDTO model)
+        public async Task<ActionResult<bool>> ChangePassword([FromBody] ChangePasswordPayload model)
         {
             try
             {
-                return Ok(true);
+                var email = User.FindFirst(ClaimTypes.Email)?.Value;
+
+                if (string.IsNullOrEmpty(email))
+                {
+                    return BadRequest("User not authenticated.");
+                }
+
+                var result = await _authService.ChangePassword(email, model.OldPassword, model.NewPassword);
+                return Ok(result);
             }
             catch (Exception ex)
             {

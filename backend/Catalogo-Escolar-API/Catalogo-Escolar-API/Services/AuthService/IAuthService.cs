@@ -12,7 +12,7 @@ namespace Catalogo_Escolar_API.Services.AuthService
         /// </summary>
         /// <param name="loginDTO">Login data of user</param>
         /// <returns>JWT</returns>
-        Task<string?> Login(LoginDTO loginDTO);
+        Task<string?> Login(LoginPayload loginDTO);
 
         /// <summary>
         /// Changes the password of the user.
@@ -27,7 +27,7 @@ namespace Catalogo_Escolar_API.Services.AuthService
         /// Registers a new user
         /// </summary>
         /// <param name="registerDTO"></param>
-        /// <returns>Result of operation</returns>
-        Task<bool> Register(RegisterDTO registerDTO);
+        /// <returns>Email of newly created user</returns>
+        Task<string?> Register(RegisterPayload registerDTO);
     }
 }
