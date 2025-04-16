@@ -1,4 +1,6 @@
-﻿namespace Catalogo_Escolar_API.Model.DTO
+﻿using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
+
+namespace Catalogo_Escolar_API.Model.DTO
 {
     /// <summary>
     /// Represents the schema of the register data received on the Auth Register endpoint.
@@ -21,5 +23,11 @@
         /// Password of new user
         /// </summary>
         required public string Password { get; set; }
+
+        /// <inheritdoc/>
+        public override string? ToString()
+        {
+            return $"RegisterPayload (firstname: {FirstName}, lastname: {LastName}, role: {RoleName}, password: {Password})";
+        }
     }
 }

@@ -1,19 +1,45 @@
 ﻿using Microsoft.EntityFrameworkCore;
 
+/// <summary>
+/// Represents the class context of database
+/// </summary>
 public class SchoolContext : DbContext
 {
+    /// <summary>
+    /// Constructor of context class
+    /// </summary>
+    /// <param name="options"></param>
     public SchoolContext(DbContextOptions<SchoolContext> options)
         : base(options)
     {
     }
 
+    /// <summary>
+    /// Users table
+    /// </summary>
     public DbSet<User> Users { get; set; }
+    /// <summary>
+    /// Students table
+    /// </summary>
     public DbSet<Student> Students { get; set; }
+    /// <summary>
+    /// Teacher table
+    /// </summary>
     public DbSet<Teacher> Teachers { get; set; }
+    /// <summary>
+    /// Classes table
+    /// </summary>
     public DbSet<Class> Classes { get; set; }
+    /// <summary>
+    /// Student-Classes table
+    /// </summary>
     public DbSet<StudentClass> StudentClasses { get; set; }
+    /// <summary>
+    /// Grades table
+    /// </summary>
     public DbSet<Grade> Grades { get; set; }
 
+    /// <inheritdoc/>
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);

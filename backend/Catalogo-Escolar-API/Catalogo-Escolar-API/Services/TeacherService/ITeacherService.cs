@@ -6,10 +6,9 @@
     public interface ITeacherService
     {
         /// <summary>
-        /// Returns a teacher with the provided email and password.
+        /// Returns a teacher with the provided email.
         /// </summary>
         /// <param name="email">Email</param>
-        /// <param name="password">Password</param>
         /// <returns>Teacher if it exists</returns>
         Task<Teacher?> Get(string email);
         /// <summary>

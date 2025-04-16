@@ -4,15 +4,24 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Catalogo_Escolar_API.Services.TeacherService
 {
+    /// <summary>
+    /// Represents the teacher service class
+    /// </summary>
     public class TeacherService : ITeacherService
     {
         private readonly SchoolContext _context;
         private readonly PasswordHasher<User> _passwordHasher;
+        /// <summary>
+        /// Represents the constructor of the teacher service class
+        /// </summary>
+        /// <param name="context">Context of database</param>
         public TeacherService(SchoolContext context)
         {
             _context = context;
             _passwordHasher = new();
         }
+
+        /// <inheritdoc/>
         public Task<bool> Add(User data)
         {
             try
@@ -30,6 +39,7 @@ namespace Catalogo_Escolar_API.Services.TeacherService
             }
         }
 
+        /// <inheritdoc/>
         public Task<bool> ChangePassword(string email, string newPassword)
         {
             try
@@ -50,6 +60,7 @@ namespace Catalogo_Escolar_API.Services.TeacherService
             }
         }
 
+        /// <inheritdoc/>
         public Task<Teacher?> Get(string email)
         {
             Teacher? student = _context.Teachers.Include(s => s.User).FirstOrDefault(s => s.User.Email == email);

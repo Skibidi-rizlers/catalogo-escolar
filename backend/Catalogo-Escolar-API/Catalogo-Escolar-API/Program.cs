@@ -2,6 +2,7 @@ using System.Reflection;
 using System.Text;
 using Catalogo_Escolar_API.Helpers;
 using Catalogo_Escolar_API.Services.AuthService;
+using Catalogo_Escolar_API.Services.BackupService;
 using Catalogo_Escolar_API.Services.StudentService;
 using Catalogo_Escolar_API.Services.TeacherService;
 using Catalogo_Escolar_API.Services.UniqueService;
@@ -36,6 +37,9 @@ builder.Services.AddScoped<IStudentService, StudentService>();
 builder.Services.AddScoped<ITeacherService, TeacherService>();
 builder.Services.AddScoped<JWTGenerator>();
 builder.Services.AddScoped<IAuthService, AuthService>();
+
+// Add hosted services to the container
+builder.Services.AddHostedService<BackupService>();
 
 // Add controllers to the container
 builder.Services.AddControllers();
@@ -111,6 +115,7 @@ builder.Services.AddSwaggerGen(c =>
 builder.Services.AddDbContext<SchoolContext>(options =>
 {
     options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection"));
+    options.LogTo(Console.WriteLine, LogLevel.Critical);
 });
 
 var app = builder.Build();

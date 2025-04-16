@@ -3,17 +3,25 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Catalogo_Escolar_API.Services.StudentService
 {
+    /// <summary>
+    /// Represents the Student service class
+    /// </summary>
     public class StudentService : IStudentService
     {
         private readonly SchoolContext _context;
         private readonly PasswordHasher<User> _passwordHasher;
 
+        /// <summary>
+        /// The student service constructor
+        /// </summary>
+        /// <param name="context">Context of database</param>
         public StudentService(SchoolContext context)
         {
             _context = context;
             _passwordHasher = new();
         }
 
+        /// <inheritdoc/>
         public Task<bool> Add(User data)
         {
             try
@@ -31,6 +39,7 @@ namespace Catalogo_Escolar_API.Services.StudentService
             }
         }
 
+        /// <inheritdoc/>
         public Task<bool> ChangePassword(string email, string newPassword)
         {
             try
@@ -51,6 +60,7 @@ namespace Catalogo_Escolar_API.Services.StudentService
             }
         }
 
+        /// <inheritdoc/>
         public Task<Student?> Get(string email)
         {
             Student? student = _context.Students.Include(s => s.User).FirstOrDefault(s => s.User.Email == email);

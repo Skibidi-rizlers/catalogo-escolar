@@ -13,5 +13,11 @@
         /// Desired password of user
         /// </summary>
         required public string NewPassword { get; set; }
+
+        /// <inheritdoc/>
+        public override string? ToString()
+        {
+            return $"ChangePasswordPayLoad (oldPassword: {OldPassword}, password: {NewPassword})";
+        }
     }
 }

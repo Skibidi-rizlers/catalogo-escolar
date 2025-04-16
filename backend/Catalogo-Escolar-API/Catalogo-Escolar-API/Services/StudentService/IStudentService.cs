@@ -6,10 +6,9 @@
     public interface IStudentService
     {
         /// <summary>
-        /// Returns a student with the provided email and password.
+        /// Returns a student with the provided email.
         /// </summary>
         /// <param name="email">Email</param>
-        /// <param name="password">Password</param>
         /// <returns>Student if it exists</returns>
         Task<Student?> Get(string email);
         /// <summary>
