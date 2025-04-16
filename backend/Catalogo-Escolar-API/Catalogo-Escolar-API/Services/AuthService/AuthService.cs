@@ -6,6 +6,9 @@ using Microsoft.AspNetCore.Identity;
 
 namespace Catalogo_Escolar_API.Services.AuthService
 {
+    /// <summary>
+    /// Represents the auth service class
+    /// </summary>
     public class AuthService : IAuthService
     {
         private readonly PasswordHasher<User> _passwordHasher;
@@ -14,6 +17,13 @@ namespace Catalogo_Escolar_API.Services.AuthService
         private readonly IUniqueService _uniqueService;
         private readonly JWTGenerator _jwtGenerator;
 
+        /// <summary>
+        /// Represents the constructor of auth service class
+        /// </summary>
+        /// <param name="studentService"></param>
+        /// <param name="teacherService"></param>
+        /// <param name="jWTGenerator"></param>
+        /// <param name="uniqueService"></param>
         public AuthService(IStudentService studentService, ITeacherService teacherService, JWTGenerator jWTGenerator,
             IUniqueService uniqueService)
         {
@@ -24,6 +34,7 @@ namespace Catalogo_Escolar_API.Services.AuthService
             _passwordHasher = new();
         }
 
+        /// <inheritdoc/>
         public async Task<bool> ChangePassword(string email, string oldPassword, string newPassword)
         {
             if (string.IsNullOrEmpty(email) || string.IsNullOrEmpty(oldPassword) || string.IsNullOrEmpty(newPassword)) 
@@ -66,6 +77,7 @@ namespace Catalogo_Escolar_API.Services.AuthService
             return false;
         }
 
+        /// <inheritdoc/>
         public async Task<string?> Login(LoginPayload loginDTO)
         {
             string? generatedToken = null;
@@ -105,6 +117,7 @@ namespace Catalogo_Escolar_API.Services.AuthService
             return generatedToken;
         }
 
+        /// <inheritdoc/>
         public async Task<string?> Register(RegisterPayload registerDTO)
         {
             if (registerDTO.RoleName != "student" && registerDTO.RoleName != "teacher")

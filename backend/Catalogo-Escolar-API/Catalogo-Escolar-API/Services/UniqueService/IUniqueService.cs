@@ -1,5 +1,8 @@
 ﻿namespace Catalogo_Escolar_API.Services.UniqueService
 {
+    /// <summary>
+    /// Represents the service that check if the email already exists in database
+    /// </summary>
     public interface IUniqueService
     {
         /// <summary>

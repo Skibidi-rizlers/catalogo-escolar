@@ -1,6 +1,8 @@
 ﻿using Catalogo_Escolar_API.Model.DTO;
 using Catalogo_Escolar_API.Services.AuthService;
+using Catalogo_Escolar_API.Services.BackupService;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
@@ -16,11 +18,14 @@ namespace Catalogo_Escolar_API.Controllers
     public class AuthController : ControllerBase
     {
         private readonly IAuthService _authService;
+        private readonly ILogger<AuthController> _logger;
         /// <summary>
         /// Represents the default constructor of the <see cref="AuthController"/> class.
         /// </summary>
-        public AuthController(IAuthService authService) { 
+        public AuthController(IAuthService authService, ILogger<AuthController> logger) 
+        { 
             _authService = authService;
+            _logger = logger;
         }
 
         /// <summary>
@@ -42,15 +47,19 @@ namespace Catalogo_Escolar_API.Controllers
         {
             try
             {
+                _logger.LogInformation("Login request received for " + model.Email);
                 string? token = await _authService.Login(model);
                 if (string.IsNullOrEmpty(token))
                 {
+                    _logger.LogWarning("Login request failure for " + model.Email);
                     return Unauthorized("Failed to login user.");
                 }
+                _logger.LogInformation("Login request successful for " + model.Email + ": " + token);
                 return Ok(token);
             }
             catch (Exception ex)
             {
+                _logger.LogError(ex.Message);
                 return StatusCode(500, "Internal server error.");
             }
         }
@@ -71,11 +80,14 @@ namespace Catalogo_Escolar_API.Controllers
         {
             try
             {
+                _logger.LogInformation("Register request received for " + model.ToString());
                 var result = await _authService.Register(model);
+                _logger.LogInformation("Register request result for " + model.ToString() + $": {result ?? "failure"}");
                 return Ok(result);
             }
             catch (Exception ex)
             {
+                _logger.LogError(ex.Message);
                 return UnprocessableEntity("Failed to register user.");
             }
         }
@@ -100,14 +112,19 @@ namespace Catalogo_Escolar_API.Controllers
 
                 if (string.IsNullOrEmpty(email))
                 {
+                    _logger.LogInformation("Change password request result for " + model.ToString() + $": missing data in JWT.");
                     return BadRequest("User not authenticated.");
                 }
 
+                _logger.LogInformation("Change password request result for " + email + " " + model.ToString());
+
                 var result = await _authService.ChangePassword(email, model.OldPassword, model.NewPassword);
+                _logger.LogInformation("Change password request result for " + model.ToString() + $": {result}.");
                 return Ok(result);
             }
             catch (Exception ex)
             {
+                _logger.LogError(ex.Message);
                 return UnprocessableEntity("Failed to change password.");
             }
         }

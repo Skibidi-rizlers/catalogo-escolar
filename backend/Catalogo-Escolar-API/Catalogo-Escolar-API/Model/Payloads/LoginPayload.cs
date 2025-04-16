@@ -13,5 +13,11 @@
         /// Password of user
         /// </summary>
         required public string Password { get; set; }
+
+        /// <inheritdoc/>
+        public override string? ToString()
+        {
+            return $"LoginPayload (email: {Email}, password: {Password})";
+        }
     }
 }
