@@ -66,5 +66,18 @@ namespace Catalogo_Escolar_API.Services.StudentService
             Student? student = _context.Students.Include(s => s.User).FirstOrDefault(s => s.User.Email == email);
             return Task.FromResult(student);
         }
+
+        /// <inheritdoc/>
+        public Task<List<Class>> GetClasses(string email)
+        {
+            var enrolledClasses = _context.Students
+                .Where(s => s.User.Email == email)
+                .Include(s => s.StudentClasses)
+                    .ThenInclude(sc => sc.Class)
+                .SelectMany(s => s.StudentClasses.Select(sc => sc.Class))
+                .ToList();
+
+            return Task.FromResult(enrolledClasses);
+        }
     }
 }
