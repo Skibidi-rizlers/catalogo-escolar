@@ -24,5 +24,12 @@
         /// <param name="newPassword">New desired password</param>
         /// <returns>Result of operation</returns>
         Task<bool> ChangePassword(string email, string newPassword);
+
+        /// <summary>
+        /// Views the classes that the student is enrolled in.
+        /// </summary>
+        /// <param name="email">Student's email</param>
+        /// <returns>List of classes</returns>
+        Task<List<Class>>GetClasses(string email);
     }
 }
