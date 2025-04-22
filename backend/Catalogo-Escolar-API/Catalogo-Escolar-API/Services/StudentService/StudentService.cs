@@ -79,5 +79,27 @@ namespace Catalogo_Escolar_API.Services.StudentService
 
             return Task.FromResult(enrolledClasses);
         }
+
+        ///<inheritdoc/>
+        public Task<bool> DeleteStudentFromClass(int studentId, int classId)
+        {
+            try
+            {
+                var studentClass = _context.StudentClasses
+                    .FirstOrDefault(sc => sc.StudentId == studentId && sc.ClassId == classId);
+                if (studentClass != null)
+                {
+                    _context.StudentClasses.Remove(studentClass);
+                    _context.SaveChanges();
+                    return Task.FromResult(true);
+                }
+                return Task.FromResult(false);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                return Task.FromResult(false);
+            }
+        }
     }
 }

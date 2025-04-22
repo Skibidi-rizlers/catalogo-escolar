@@ -31,5 +31,13 @@
         /// <param name="email">Student's email</param>
         /// <returns>List of classes</returns>
         Task<List<Class>>GetClasses(string email);
+
+        /// <summary>
+        /// Deletes a student from an enrolled class.
+        /// </summary>
+        /// <param name="studentId">Student ID</param>
+        /// <param name="classId">Class ID</param>
+        /// <returns>Result of operation</returns>
+        Task<bool> DeleteStudentFromClass(int studentId, int classId);
     }
 }
