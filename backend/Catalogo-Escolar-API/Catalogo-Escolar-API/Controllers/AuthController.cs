@@ -128,5 +128,42 @@ namespace Catalogo_Escolar_API.Controllers
                 return UnprocessableEntity("Failed to change password.");
             }
         }
+
+        /// <summary>
+        /// Sends the reset password email to the user.
+        /// </summary>
+        /// <param name="model">Payload</param>
+        /// <returns>A boolean indicating whether the email was sent.</returns>
+        /// <response code="200">Send successful.</response>
+        /// <response code="400">Data in body is not correct.</response>
+        /// <response code="422">Unable to send password.</response>
+        [HttpPost("reset-password")]
+        [AllowAnonymous]
+        [ProducesResponseType(200)]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(422)]
+        public async Task<ActionResult<bool>> ResetPassword([FromBody] ResetPasswordPayload model)
+        {
+            try
+            {
+                var email = model.Email;
+
+                if (string.IsNullOrEmpty(email))
+                {
+                    _logger.LogInformation("Reset password request result for " + model.ToString() + $": invalid data in body.");
+                    return BadRequest("Email not valid.");
+                }
+
+
+                var result = await _authService.ResetPasswordRequest(email);
+                _logger.LogInformation("Reset password request result for " + model.ToString() + $": {result}.");
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.Message);
+                return UnprocessableEntity("Failed to Reset password.");
+            }
+        }
     }
 }

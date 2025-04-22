@@ -3,6 +3,7 @@ using System.Text;
 using Catalogo_Escolar_API.Helpers;
 using Catalogo_Escolar_API.Services.AuthService;
 using Catalogo_Escolar_API.Services.BackupService;
+using Catalogo_Escolar_API.Services.EmailService;
 using Catalogo_Escolar_API.Services.StudentService;
 using Catalogo_Escolar_API.Services.TeacherService;
 using Catalogo_Escolar_API.Services.UniqueService;
@@ -31,8 +32,12 @@ builder.Services.AddCors(options =>
 builder.Services.Configure<AuthSettings>(builder.Configuration.GetSection(nameof(AuthSettings)));
 builder.Services.AddSingleton<IAuthSettings>(sp => sp.GetRequiredService<IOptions<AuthSettings>>().Value);
 
+builder.Services.Configure<EmailSettings>(builder.Configuration.GetSection(nameof(EmailSettings)));
+builder.Services.AddSingleton<IEmailSettings>(sp => sp.GetRequiredService<IOptions<EmailSettings>>().Value);
+
 // Add services to the container.
 builder.Services.AddScoped<IUniqueService, UniqueService>();
+builder.Services.AddScoped<IEmailService, EmailService>();
 builder.Services.AddScoped<IStudentService, StudentService>();
 builder.Services.AddScoped<ITeacherService, TeacherService>();
 builder.Services.AddScoped<JWTGenerator>();
@@ -69,8 +74,6 @@ builder.Services
     });
 builder.Services.AddAuthorizationBuilder()
     .AddPolicy("Teacher", policy => policy.RequireRole("teacher"));
-
-
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();

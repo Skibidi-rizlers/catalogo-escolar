@@ -3,6 +3,9 @@ using Catalogo_Escolar_API.Model.DTO;
 using Catalogo_Escolar_API.Services.StudentService;
 using Catalogo_Escolar_API.Services.UniqueService;
 using Microsoft.AspNetCore.Identity;
+using System.Net.Mail;
+using System.Net;
+using System.Text;
 
 namespace Catalogo_Escolar_API.Services.AuthService
 {
@@ -15,6 +18,7 @@ namespace Catalogo_Escolar_API.Services.AuthService
         private readonly IStudentService _studentService;
         private readonly ITeacherService _teacherService;
         private readonly IUniqueService _uniqueService;
+        private readonly IEmailService _emailService;
         private readonly JWTGenerator _jwtGenerator;
 
         /// <summary>
@@ -24,14 +28,16 @@ namespace Catalogo_Escolar_API.Services.AuthService
         /// <param name="teacherService"></param>
         /// <param name="jWTGenerator"></param>
         /// <param name="uniqueService"></param>
+        /// <param name="emailService"></param>
         public AuthService(IStudentService studentService, ITeacherService teacherService, JWTGenerator jWTGenerator,
-            IUniqueService uniqueService)
+            IUniqueService uniqueService, IEmailService emailService)
         {
             _studentService = studentService;
             _teacherService = teacherService;
             _jwtGenerator = jWTGenerator;
             _uniqueService = uniqueService;
             _passwordHasher = new();
+            _emailService = emailService;
         }
 
         /// <inheritdoc/>
@@ -144,6 +150,32 @@ namespace Catalogo_Escolar_API.Services.AuthService
             }
 
             return null;
+        }
+
+        /// <inheritdoc/>
+        public async Task<bool> ResetPasswordRequest(string email)
+        {
+            User? user = null;
+
+            if (email.EndsWith("@student.com"))
+            {
+                user = (await _studentService.Get(email))?.User;
+            } 
+            else if (email.EndsWith("@teacher.com"))
+            {
+                user = (await _teacherService.Get(email))?.User;
+            }
+
+            if (user == null)
+            {
+                return false;
+            }
+
+            var userIdBytes = Encoding.UTF8.GetBytes(user.Id.ToString());
+            var encodedId = Convert.ToBase64String(userIdBytes);
+
+            var resetLink = $"http://localhost:4200/reset-password?id={encodedId}";
+            return _emailService.SendEmail(email, resetLink);
         }
     }
 }

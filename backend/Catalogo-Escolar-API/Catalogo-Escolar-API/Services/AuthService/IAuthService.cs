@@ -29,5 +29,12 @@ namespace Catalogo_Escolar_API.Services.AuthService
         /// <param name="registerDTO"></param>
         /// <returns>Email of newly created user</returns>
         Task<string?> Register(RegisterPayload registerDTO);
+
+        /// <summary>
+        /// Check if there exists a user with the provided email and tries to send reset email
+        /// </summary>
+        /// <param name="email"></param>
+        /// <returns>Result of operation</returns>
+        Task<bool> ResetPasswordRequest(string email);
     }
 }
