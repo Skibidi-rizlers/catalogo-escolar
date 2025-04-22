@@ -174,7 +174,7 @@ namespace Catalogo_Escolar_API.Services.AuthService
             var userIdBytes = Encoding.UTF8.GetBytes(user.Id.ToString());
             var encodedId = Convert.ToBase64String(userIdBytes);
 
-            var resetLink = $"http://localhost:4200/reset-password?id={encodedId}";
+            var resetLink = $"http://localhost:4200/reset-password/{encodedId}";
             return _emailService.SendEmail(email, resetLink);
         }
     }
