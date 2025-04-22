@@ -26,6 +26,16 @@ namespace Catalogo_Escolar_API.Controllers
             return Ok(classes);
         }
 
-
+        [HttpDelete("remove-student-class")]
+        public async Task<IActionResult> RemoveStudentFromClass([FromQuery] int studentId, [FromQuery] int classId)
+        {
+            if (studentId <= 0)
+                return BadRequest("Student data is incorrect");
+            var result = await _studentService.DeleteStudentFromClass(studentId, classId);
+            if (result)
+                return Ok("Student removed from class");
+            else
+                return BadRequest("Failed to remove student from class");
+        }
     }
 }
