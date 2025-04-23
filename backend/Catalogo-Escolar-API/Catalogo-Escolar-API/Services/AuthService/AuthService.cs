@@ -17,7 +17,7 @@ namespace Catalogo_Escolar_API.Services.AuthService
         private readonly PasswordHasher<User> _passwordHasher;
         private readonly IStudentService _studentService;
         private readonly ITeacherService _teacherService;
-        private readonly IUniqueService _uniqueService;
+        private readonly IUserService _userService;
         private readonly IEmailService _emailService;
         private readonly JWTGenerator _jwtGenerator;
 
@@ -27,15 +27,15 @@ namespace Catalogo_Escolar_API.Services.AuthService
         /// <param name="studentService"></param>
         /// <param name="teacherService"></param>
         /// <param name="jWTGenerator"></param>
-        /// <param name="uniqueService"></param>
+        /// <param name="userService"></param>
         /// <param name="emailService"></param>
         public AuthService(IStudentService studentService, ITeacherService teacherService, JWTGenerator jWTGenerator,
-            IUniqueService uniqueService, IEmailService emailService)
+            IUserService userService, IEmailService emailService)
         {
             _studentService = studentService;
             _teacherService = teacherService;
             _jwtGenerator = jWTGenerator;
-            _uniqueService = uniqueService;
+            _userService = userService;
             _passwordHasher = new();
             _emailService = emailService;
         }
@@ -134,7 +134,7 @@ namespace Catalogo_Escolar_API.Services.AuthService
                 FirstName = registerDTO.FirstName,
                 LastName = registerDTO.LastName,
                 Password = registerDTO.Password,
-                Email = EmailFormatter.GenerateUniqueEmail(registerDTO, email => _uniqueService.EmailExists(email))
+                Email = EmailFormatter.GenerateUniqueEmail(registerDTO, email => _userService.EmailExists(email))
             };
 
             newUser.Password = _passwordHasher.HashPassword(newUser, registerDTO.Password);
@@ -150,6 +150,21 @@ namespace Catalogo_Escolar_API.Services.AuthService
             }
 
             return null;
+        }
+
+        /// <inheritdoc/>
+        public Task<bool> ResetPassword(int id, string newPassword)
+        {
+            var user = _userService.GetUserById(id);
+
+            if (user == null)
+            {
+                return Task.FromResult(false);
+            }
+
+            user.Password = _passwordHasher.HashPassword(user, newPassword);
+
+            return Task.FromResult(_userService.Update(user));
         }
 
         /// <inheritdoc/>

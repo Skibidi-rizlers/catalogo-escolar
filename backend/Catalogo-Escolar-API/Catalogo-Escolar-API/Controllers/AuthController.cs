@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
+using System.Text;
 
 namespace Catalogo_Escolar_API.Controllers
 {
@@ -54,7 +55,7 @@ namespace Catalogo_Escolar_API.Controllers
                     _logger.LogWarning("Login request failure for " + model.Email);
                     return Unauthorized("Failed to login user.");
                 }
-                _logger.LogInformation("Login request successful for " + model.Email + ": " + token);
+                _logger.LogInformation("Login request successful for " + model.Email);
                 return Ok(token);
             }
             catch (Exception ex)
@@ -137,6 +138,43 @@ namespace Catalogo_Escolar_API.Controllers
         /// <response code="200">Send successful.</response>
         /// <response code="400">Data in body is not correct.</response>
         /// <response code="422">Unable to send password.</response>
+        [HttpPost("request-reset-password")]
+        [AllowAnonymous]
+        [ProducesResponseType(200)]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(422)]
+        public async Task<ActionResult<bool>> ResetPasswordRequest([FromBody] ResetPasswordRequestPayload model)
+        {
+            try
+            {
+                var email = model.Email;
+
+                if (string.IsNullOrEmpty(email))
+                {
+                    _logger.LogInformation("Request reset password result for " + model.ToString() + $": invalid data in body.");
+                    return BadRequest("Email not valid.");
+                }
+
+
+                var result = await _authService.ResetPasswordRequest(email);
+                _logger.LogInformation("Request Reset password result for " + model.ToString() + $": {result}.");
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.Message);
+                return UnprocessableEntity("Failed to Request Reset password.");
+            }
+        }
+
+        /// <summary>
+        /// Reset password of user.
+        /// </summary>
+        /// <param name="model">Payload</param>
+        /// <returns>A boolean indicating whether the password was reset.</returns>
+        /// <response code="200">Reset successful.</response>
+        /// <response code="400">Data in body is not correct.</response>
+        /// <response code="422">Unable to reset password.</response>
         [HttpPost("reset-password")]
         [AllowAnonymous]
         [ProducesResponseType(200)]
@@ -146,17 +184,12 @@ namespace Catalogo_Escolar_API.Controllers
         {
             try
             {
-                var email = model.Email;
+                var decodedBytes = Convert.FromBase64String(model.EncodedId);
+                var decodedId = Encoding.UTF8.GetString(decodedBytes);
+                int id = int.Parse(decodedId);
 
-                if (string.IsNullOrEmpty(email))
-                {
-                    _logger.LogInformation("Reset password request result for " + model.ToString() + $": invalid data in body.");
-                    return BadRequest("Email not valid.");
-                }
-
-
-                var result = await _authService.ResetPasswordRequest(email);
-                _logger.LogInformation("Reset password request result for " + model.ToString() + $": {result}.");
+                var result = await _authService.ResetPassword(id, model.Password);
+                _logger.LogInformation("Reset password result for " + model.ToString() + $": {result}.");
                 return Ok(result);
             }
             catch (Exception ex)

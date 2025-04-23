@@ -34,4 +34,23 @@ export class AuthService {
     );
   }
 
+  requestResetPassword(email: string): Observable<boolean> {
+    return this.http.post<string>(
+      `${this.AUTH_API_URL}/request-reset-password`,
+      { email },
+      { headers: this.httpOptions.headers, responseType: 'text' as 'json' }
+    ).pipe(
+      map((response: string) => response === 'true')
+    );
+  }
+
+  resetPassword(encodedId: string, password: string): Observable<boolean> {
+    return this.http.post<string>(
+      `${this.AUTH_API_URL}/reset-password`,
+      { encodedId, password },
+      { headers: this.httpOptions.headers, responseType: 'text' as 'json' }
+    ).pipe(
+      map((response: string) => response === 'true')
+    );
+  }
 }

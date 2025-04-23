@@ -8,12 +8,16 @@
         /// <summary>
         /// Email
         /// </summary>
-        required public string Email { get; set; }
+        required public string EncodedId { get; set; }
+        /// <summary>
+        /// Password
+        /// </summary>
+        required public string Password { get; set; }
 
         /// <inheritdoc/>
         public override string? ToString()
         {
-            return $"ResetPasswordPayload (email: {Email})";
+            return $"ResetPasswordPayload (encodedId: {EncodedId}, password: {Password})";
         }
     }
 }

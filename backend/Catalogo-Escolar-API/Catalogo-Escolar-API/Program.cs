@@ -36,7 +36,7 @@ builder.Services.Configure<EmailSettings>(builder.Configuration.GetSection(nameo
 builder.Services.AddSingleton<IEmailSettings>(sp => sp.GetRequiredService<IOptions<EmailSettings>>().Value);
 
 // Add services to the container.
-builder.Services.AddScoped<IUniqueService, UniqueService>();
+builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IEmailService, EmailService>();
 builder.Services.AddScoped<IStudentService, StudentService>();
 builder.Services.AddScoped<ITeacherService, TeacherService>();
