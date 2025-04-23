@@ -19,9 +19,17 @@ namespace Catalogo_Escolar_API.Services.AuthService
         /// </summary>
         /// <param name="email">Email of user</param>
         /// <param name="oldPassword">Old password of user</param>
-        /// <param name="newPassword">New desire password of user</param>
+        /// <param name="newPassword">New desired password of user</param>
         /// <returns>Result of operation</returns>
         Task<bool> ChangePassword(string email, string oldPassword, string newPassword);
+
+        /// <summary>
+        /// Changes the password of the user.
+        /// </summary>
+        /// <param name="id">Id of User model</param>
+        /// <param name="newPassword">Password after reset</param>
+        /// <returns>Result of operation</returns>
+        Task<bool> ResetPassword(int id, string newPassword);
 
         /// <summary>
         /// Registers a new user
@@ -29,5 +37,12 @@ namespace Catalogo_Escolar_API.Services.AuthService
         /// <param name="registerDTO"></param>
         /// <returns>Email of newly created user</returns>
         Task<string?> Register(RegisterPayload registerDTO);
+
+        /// <summary>
+        /// Check if there exists a user with the provided email and tries to send reset email
+        /// </summary>
+        /// <param name="email"></param>
+        /// <returns>Result of operation</returns>
+        Task<bool> ResetPasswordRequest(string email);
     }
 }
