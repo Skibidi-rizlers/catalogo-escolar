@@ -1,0 +1,55 @@
+.account-container {
+    max-width: 500px;
+    margin: 40px auto;
+    padding: 30px;
+    background-color: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.account-title {
+    text-align: center;
+    color: #2c3e50;
+    margin-bottom: 10px;
+    font-size: 26px;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+}
+
+.form-group label {
+    margin-bottom: 6px;
+    font-weight: 600;
+    color: #34495e;
+}
+
+.form-group input {
+    padding: 10px 12px;
+    font-size: 16px;
+    border: 1px solid #dcdcdc;
+    border-radius: 6px;
+    background-color: #f9f9f9;
+    color: #7f8c8d;
+}
+
+.change-password-btn {
+    margin-top: 10px;
+    padding: 12px;
+    background-color: #3498db;
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.change-password-btn:hover {
+    background-color: #2980b9;
+}

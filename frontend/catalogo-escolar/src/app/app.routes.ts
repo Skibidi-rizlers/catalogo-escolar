@@ -6,8 +6,10 @@ import { RoleGuard } from './_helpers/role-guard';
 import { AuthGuard } from './_helpers/auth-guard';
 import { TeacherDashboardComponent } from './teacher-dashboard/teacher-dashboard.component';
 import { ResetPasswordComponent } from './reset-password/reset-password.component';
+import { MyProfileComponent } from './my-profile/my-profile.component';
 
 export const routes: Routes = [
+  { path: 'profile', component: MyProfileComponent, canActivate: [AuthGuard] },
   { path: 'change-password', component: ChangePasswordComponent, canActivate: [AuthGuard] },
   { path: 'login', component: LoginComponent },
   { path: 'reset-password', component: ResetPasswordComponent },

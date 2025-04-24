@@ -9,38 +9,43 @@ const AUTH_TOKEN = 'auth-token';
   providedIn: 'root'
 })
 export class StorageService {
-  constructor() {}
+  constructor() { }
 
-  clean(): void {
-    window.sessionStorage.clear();
-  }
-
-  public saveToken(token: string): void {
+  public clean(): void {
     window.sessionStorage.removeItem(AUTH_TOKEN);
-    window.sessionStorage.setItem(AUTH_TOKEN, token);
+    window.localStorage.removeItem(AUTH_TOKEN);
   }
+
+
+  public saveToken(token: string, rememberMe: boolean = false): void {
+    window.sessionStorage.removeItem(AUTH_TOKEN);
+    window.localStorage.removeItem(AUTH_TOKEN);
+
+    if (rememberMe === true) {
+      window.localStorage.setItem(AUTH_TOKEN, token);
+    } else if (rememberMe === false) {
+      window.sessionStorage.setItem(AUTH_TOKEN, token);
+    }
+  }
+
 
   public getUser(): Observable<User | undefined> {
-    const token = window.sessionStorage.getItem(AUTH_TOKEN);
+    const token = this.getToken();
     if (token) {
       let decoder = new JwtParser(token);
       return of(decoder.getUser());
     }
-  
+
     return of(undefined);
   }
 
-  public getToken() : string | null{
-    const token = window.sessionStorage.getItem(AUTH_TOKEN);
-    return token;
+  public getToken(): string | null {
+    return window.sessionStorage.getItem(AUTH_TOKEN) || window.localStorage.getItem(AUTH_TOKEN);
   }
+
 
   public isLoggedIn(): boolean {
-    const token = window.sessionStorage.getItem(AUTH_TOKEN);
-    if (token) {
-      return true;
-    }
-
-    return false;
+    return !!this.getToken();
   }
+
 }
