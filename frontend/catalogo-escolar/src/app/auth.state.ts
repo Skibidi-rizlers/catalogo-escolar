@@ -40,8 +40,8 @@ export class AuthState {
         this.router.navigate(['/login']);
     }
 
-    setUser(token: string): void {
-        this.storageService.saveToken(token);
+    setUser(token: string, rememberMe : boolean): void {
+        this.storageService.saveToken(token, rememberMe);
         const parsedUser = new JwtParser(token).getUser();
         this.userSubject.next(parsedUser);
     }

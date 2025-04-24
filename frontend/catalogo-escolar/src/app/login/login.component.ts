@@ -20,7 +20,7 @@ export class LoginComponent implements OnInit {
   errorMessage: string = '';
 
   constructor(private fb: FormBuilder, private authService: AuthService, private router: Router, private storageService: StorageService,
-    private titleService: Title, private snackbarService: SnackbarService, private authState : AuthState) {
+    private titleService: Title, private snackbarService: SnackbarService, private authState: AuthState) {
     this.form = this.fb.group({
       email: ['', [Validators.required, Validators.email]],
       password: ['', [Validators.required]],
@@ -42,9 +42,10 @@ export class LoginComponent implements OnInit {
 
   submit() {
     if (this.form.valid) {
-      this.authService.login(this.form.value.email, this.form.value.password).subscribe({
+      const { email, password, rememberMe } = this.form.value;
+      this.authService.login(email, password).subscribe({
         next: (JWT) => {
-          this.authState.setUser(JWT);
+          this.authState.setUser(JWT, rememberMe);
           this.snackbarService.success('Login successful!');
           this.router.navigate(['/student-dashboard']);
         },
