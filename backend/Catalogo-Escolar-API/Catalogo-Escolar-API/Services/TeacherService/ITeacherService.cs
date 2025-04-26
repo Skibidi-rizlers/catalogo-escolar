@@ -24,5 +24,13 @@
         /// <param name="newPassword">New desired password</param>
         /// <returns>Result of operation</returns>
         Task<bool> ChangePassword(string email, string newPassword);
+
+        /// <summary>
+        /// Delete a course with the provided id.
+        /// </summary>
+        /// <param name="courseId">Id of course</param>
+        /// <param name="teacherId">Id of teacher</param>
+        /// <returns>Result of operation</returns>
+        Task<bool> DeleteCourse(int courseId, int teacherId);
     }
 }
