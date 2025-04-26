@@ -66,5 +66,26 @@ namespace Catalogo_Escolar_API.Services.TeacherService
             Teacher? student = _context.Teachers.Include(s => s.User).FirstOrDefault(s => s.User.Email == email);
             return Task.FromResult(student);
         }
+
+        /// <inheritdoc/>
+        public Task<bool> DeleteCourse(int courseId, int teacherId)
+        {
+            try
+            {
+                var course = _context.Classes.FirstOrDefault(c => c.Id == courseId && c.TeacherId == teacherId);
+                if (course != null)
+                {
+                    _context.Classes.Remove(course);
+                    _context.SaveChanges();
+                    return Task.FromResult(true);
+                }
+                return Task.FromResult(false);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                return Task.FromResult(false);
+            }
+        }
     }
 }
