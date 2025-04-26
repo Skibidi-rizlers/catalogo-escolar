@@ -1,10 +1,7 @@
-﻿using Catalogo_Escolar_API.Model.DTO;
+﻿using Catalogo_Escolar_API.Model.Payloads.Auth;
 using Catalogo_Escolar_API.Services.AuthService;
-using Catalogo_Escolar_API.Services.BackupService;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
 using System.Text;
 

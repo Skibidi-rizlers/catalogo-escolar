@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
-namespace Catalogo_Escolar_API.Model.DTO
+namespace Catalogo_Escolar_API.Model.Payloads.Auth
 {
     /// <summary>
     /// Represents the schema of the register data received on the Auth Register endpoint.

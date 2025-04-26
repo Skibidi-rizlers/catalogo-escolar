@@ -1,6 +1,7 @@
 using System.Reflection;
 using System.Text;
 using Catalogo_Escolar_API.Helpers;
+using Catalogo_Escolar_API.Services.AssignmentService;
 using Catalogo_Escolar_API.Services.AuthService;
 using Catalogo_Escolar_API.Services.BackupService;
 using Catalogo_Escolar_API.Services.EmailService;
@@ -40,6 +41,7 @@ builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IEmailService, EmailService>();
 builder.Services.AddScoped<IStudentService, StudentService>();
 builder.Services.AddScoped<ITeacherService, TeacherService>();
+builder.Services.AddScoped<IAssignmentService, AssignmentService>();
 builder.Services.AddScoped<JWTGenerator>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 

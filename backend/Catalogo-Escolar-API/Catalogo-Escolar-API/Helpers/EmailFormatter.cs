@@ -1,4 +1,4 @@
-﻿using Catalogo_Escolar_API.Model.DTO;
+﻿using Catalogo_Escolar_API.Model.Payloads.Auth;
 
 namespace Catalogo_Escolar_API.Helpers
 {
