@@ -1,4 +1,6 @@
-﻿namespace Catalogo_Escolar_API.Services.StudentService
+﻿using Catalogo_Escolar_API.Model.DTOs;
+
+namespace Catalogo_Escolar_API.Services.StudentService
 {
     /// <summary>
     /// Interface for TeacherService
@@ -31,7 +33,7 @@
         /// <param name="courseId">Id of course</param>
         /// <param name="teacherId">Id of teacher</param>
         /// <returns>Result of operation</returns>
-        Task<bool> DeleteCourse(int courseId, int teacherId);
+        Task<bool> DeleteCourse(string courseName, int teacherId);
 
         /// <summary>
         /// Adds a course to the teacher with the provided id.
@@ -64,6 +66,11 @@
         /// <returns>Result of operation</returns>
         Task<bool> DeleteStudentFromCourse(int studentId, int courseId);
 
-
+        /// <summary>
+        /// Returns a list of courses for the teacher with the provided id.
+        /// </summary>
+        /// <param name="teacherId">Id of teacher</param>
+        /// <returns>List of courses</returns>
+        Task<List<ClassDTO>> GetTeacherCourses(int teacherId);
     }
 }

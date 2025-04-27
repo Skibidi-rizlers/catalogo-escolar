@@ -1,4 +1,5 @@
-﻿using Catalogo_Escolar_API.Services.StudentService;
+﻿using Catalogo_Escolar_API.Model.DTOs;
+using Catalogo_Escolar_API.Services.StudentService;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
@@ -68,11 +69,11 @@ namespace Catalogo_Escolar_API.Services.TeacherService
         }
 
         /// <inheritdoc/>
-        public Task<bool> DeleteCourse(int courseId, int teacherId)
+        public Task<bool> DeleteCourse(string courseName, int teacherId)
         {
             try
             {
-                var course = _context.Classes.FirstOrDefault(c => c.Id == courseId && c.TeacherId == teacherId);
+                var course = _context.Classes.FirstOrDefault(c => c.Name == courseName && c.TeacherId == teacherId);
                 if (course != null)
                 {
                     _context.Classes.Remove(course);
@@ -207,5 +208,35 @@ namespace Catalogo_Escolar_API.Services.TeacherService
                 return Task.FromResult(false);
             }
         }
+
+        /// <inheritdoc/>
+        public Task<List<ClassDTO>> GetTeacherCourses(int teacherId)
+        {
+            var teacher = _context.Teachers.FirstOrDefault(t => t.Id == teacherId);
+            if (teacher == null)
+                return Task.FromResult(new List<ClassDTO>());
+
+            var courses = _context.Classes
+                .Where(c => c.TeacherId == teacherId)
+                .ToList();
+
+            var courseDTOs = new List<ClassDTO>();
+            foreach (var course in courses)
+            {
+                var courseDTO = new ClassDTO
+                {
+                    Name = course.Name,
+                    Students = _context.StudentClasses
+                        .Where(sc => sc.ClassId == course.Id)
+                        .Select(sc => new StudentDTO
+                        {
+                            Name = sc.Student.User.FirstName + " " + sc.Student.User.LastName
+                        }).ToList()
+                };
+                courseDTOs.Add(courseDTO);
+            }
+            return Task.FromResult(courseDTOs);
+        }
+
     }
 }

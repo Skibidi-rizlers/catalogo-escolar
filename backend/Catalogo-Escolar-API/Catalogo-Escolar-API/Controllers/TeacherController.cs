@@ -16,11 +16,11 @@ namespace Catalogo_Escolar_API.Controllers
         }
 
         [HttpDelete("delete-course")]
-        public async Task<IActionResult> DeleteCourse([FromQuery] int courseId, [FromQuery] int teacherId)
+        public async Task<IActionResult> DeleteCourse([FromQuery] string courseName, [FromQuery] int teacherId)
         {
-            if (courseId <= 0 || teacherId <= 0)
+            if (teacherId <= 0|| string.IsNullOrEmpty(courseName))
                 return BadRequest("Course data is incorrect");
-            var result = await _teacherService.DeleteCourse(courseId, teacherId);
+            var result = await _teacherService.DeleteCourse(courseName, teacherId);
             if (result)
                 return Ok("Course deleted");
             else
@@ -49,6 +49,18 @@ namespace Catalogo_Escolar_API.Controllers
                 return Ok("Course modified");
             else
                 return BadRequest("Failed to modify course");
+        }
+
+        [HttpGet("get-teacher-courses")]
+        public async Task<IActionResult> GetTeacherCourses([FromQuery] int teacherId)
+        {
+            if (teacherId <= 0)
+                return BadRequest("Teacher data is incorrect");
+            var result = await _teacherService.GetTeacherCourses(teacherId);
+            if (result != null)
+                return Ok(result);
+            else
+                return NotFound("No courses found for this teacher");
         }
 
         [HttpPost("add-student-to-course")]

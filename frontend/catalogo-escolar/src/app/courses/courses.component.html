@@ -1,0 +1,21 @@
+<div class="course-list">
+  <div *ngFor="let course of courses; let i = index" class="course-card">
+    <div *ngIf="editingIndex !== i; else editMode">
+      <h2>{{ course.name }}</h2>
+      <button (click)="startEdit(i)">Edit</button>
+      <button (click)="deleteCourse(i)">Delete</button>
+    </div>
+
+    <ng-template #editMode>
+      <input [(ngModel)]="updatedName" />
+      <button (click)="saveEdit(i)">Save</button>
+      <button (click)="cancelEdit()">Cancel</button>
+    </ng-template>
+
+    <ul>
+      <li *ngFor="let student of course.students">
+        {{ student.name }}
+      </li>
+    </ul>
+  </div>
+</div>
