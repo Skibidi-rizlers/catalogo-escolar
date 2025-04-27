@@ -1,0 +1,38 @@
+<div class="course-list">
+  <div *ngFor="let course of courses; let i = index" class="course-card" (click)="goToCourse(course)">
+    <div *ngIf="editingIndex !== i; else editMode" (click)="$event.stopPropagation()">
+      <h2>{{ course.name }}</h2>
+      <button (click)="startEdit(i)">Edit</button>
+      <button (click)="deleteCourse(i)">Delete</button>
+    </div>
+
+    <ng-template #editMode>
+      <input [(ngModel)]="updatedName" />
+      <button (click)="saveEdit(i)">Save</button>
+      <button (click)="cancelEdit()">Cancel</button>
+    </ng-template>
+
+    <ul>
+      <li *ngFor="let student of course.students" (click)="$event.stopPropagation()">
+        {{ student.name }}
+        <button (click)="removeStudent(student.name, course.name)">Remove Student</button>
+      </li>
+    </ul>
+  </div>
+</div>
+
+<div class="add-course-form">
+  <input type="text" [(ngModel)]="newCourseName" placeholder="Enter course name">
+  <button (click)="addCourse()">Add Course</button>
+</div>
+
+<div class="add-student-to-course">
+  <label for="studentSelect">Add Student:</label>
+  <select id="studentSelect" [(ngModel)]="selectedStudent">
+    <option *ngFor="let student of availableStudents" [ngValue]="student">{{ student.name }}</option>
+  </select>
+  <select id="studentSelect" [(ngModel)]="selectedCourse">
+    <option *ngFor="let course of courses" [ngValue]="course">{{ course.name }}</option>
+  </select>
+  <button (click)="addStudentToCourse()">Add</button>
+</div>

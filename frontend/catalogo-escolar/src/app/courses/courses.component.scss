@@ -1,0 +1,140 @@
+/* Main container styles */
+.course-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 20px;
+  padding: 20px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+/* Course card styling */
+.course-card {
+  background-color: #ffffff;
+  border-radius: 10px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+  transition: transform 0.2s, box-shadow 0.2s;
+  position: relative;
+}
+
+.course-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
+}
+
+/* Course title styling */
+.course-card h2 {
+  margin-top: 0;
+  margin-bottom: 15px;
+  color: #333;
+  font-size: 22px;
+  font-weight: 600;
+}
+
+/* Button styling */
+button {
+  background-color: #4a7bff;
+  color: white;
+  border: none;
+  padding: 8px 12px;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-right: 8px;
+  font-weight: 500;
+  transition: background-color 0.2s;
+}
+
+button:hover {
+  background-color: #3a6be0;
+}
+
+button:active {
+  background-color: #2957cc;
+}
+
+/* Delete button styling */
+button[click*="deleteCourse"] {
+  background-color: #ff4a4a;
+}
+
+button[click*="deleteCourse"]:hover {
+  background-color: #e03a3a;
+}
+
+/* Student list styling */
+ul {
+  list-style-type: none;
+  padding-left: 0;
+  margin-top: 15px;
+  border-top: 1px solid #eee;
+  padding-top: 15px;
+}
+
+li {
+  padding: 8px 0;
+  color: #555;
+  border-bottom: 1px solid #f5f5f5;
+}
+
+li:last-child {
+  border-bottom: none;
+}
+
+/* Edit mode styling */
+input {
+  padding: 8px 10px;
+  border: 2px solid #ddd;
+  border-radius: 5px;
+  font-size: 16px;
+  width: 100%;
+  margin-bottom: 10px;
+  box-sizing: border-box;
+}
+
+input:focus {
+  border-color: #4a7bff;
+  outline: none;
+}
+
+/* Add course form styling */
+.add-course-form {
+  background-color: #f8f9fa;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  max-width: 600px;
+  margin: 20px auto;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.add-course-form input {
+  flex: 1;
+  min-width: 250px;
+  margin-bottom: 0;
+}
+
+.add-course-form button {
+  background-color: #4caf50;
+}
+
+.add-course-form button:hover {
+  background-color: #3d9c40;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .course-list {
+    grid-template-columns: 1fr;
+  }
+
+  .add-course-form {
+    flex-direction: column;
+  }
+
+  .add-course-form input {
+    margin-bottom: 10px;
+  }
+}

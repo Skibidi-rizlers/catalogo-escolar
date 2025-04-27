@@ -1,4 +1,6 @@
-﻿namespace Catalogo_Escolar_API.Services.StudentService
+﻿using Catalogo_Escolar_API.Model.DTOs;
+
+namespace Catalogo_Escolar_API.Services.StudentService
 {
     /// <summary>
     /// Interface for TeacherService
@@ -31,7 +33,7 @@
         /// <param name="courseId">Id of course</param>
         /// <param name="teacherId">Id of teacher</param>
         /// <returns>Result of operation</returns>
-        Task<bool> DeleteCourse(int courseId, int teacherId);
+        Task<bool> DeleteCourse(string courseName, int teacherId);
 
         /// <summary>
         /// Adds a course to the teacher with the provided id.
@@ -56,14 +58,32 @@
         /// <param name="studentId">Id of student </param>
         /// <param name="courseId">Id of course</param>
         /// <returns>Result of operation</returns>
-        Task<bool> AddStudentToCourse(int studentId, int courseId);
+        Task<bool> AddStudentToCourse(string studentName, string courseName);
         /// <summary>
         /// Deletes a student from a course with the provided id.
         /// <param name="studentId">Id of student </param>
         /// <param name="courseId">Id of course</param>
         /// <returns>Result of operation</returns>
-        Task<bool> DeleteStudentFromCourse(int studentId, int courseId);
+        Task<bool> DeleteStudentFromCourse(string studentName, string courseName);
 
+        /// <summary>
+        /// Returns a list of courses for the teacher with the provided id.
+        /// </summary>
+        /// <param name="teacherId">Id of teacher</param>
+        /// <returns>List of courses</returns>
+        Task<List<ClassDTO>> GetTeacherCourses(int teacherId);
+        /// <summary>
+        /// Returns a course for the teacher with the provided id and name.
+        /// </summary>
+        /// <param name="teacherId"></param>
+        /// <param name="courseName"></param>
+        /// <returns></returns>
+        Task<ClassDTO?> GetTeacherCourse(int teacherId, string courseName);
 
+        /// <summary>
+        /// Returns a list of students.
+        /// </summary>
+        /// <returns>List of students</returns>
+        Task<List<StudentDTO>> GetStudents();
     }
 }
