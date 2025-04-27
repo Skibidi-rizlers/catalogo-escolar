@@ -65,5 +65,31 @@ export class TeacherService {
     );
   }
 
+  addCourse(courseName:string):void{
+    const options = {
+      ...this.httpOptions,
+      params: { teacherId: this.teacherId || '' , courseName: courseName},
+    };
+
+    this.http.post<Course>(`${this.TEACHER_API_URL}/add-course`, {}, options).subscribe(
+      (response) => {
+        console.log('Course added successfully:', response);
+      }
+    );
+  }
+
+  deleteStudentFromCourse(studentName: string, courseName: string): void {
+    const options = {
+      ...this.httpOptions,
+      params: { teacherId: this.teacherId || '' , studentName: studentName, courseName: courseName},
+    };
+
+    this.http.delete<any>(`${this.TEACHER_API_URL}/delete-student-from-course`, options).subscribe(
+      (response) => {
+        console.log('Student deleted successfully:', response);
+      }
+    );
+  }
+
 
 }

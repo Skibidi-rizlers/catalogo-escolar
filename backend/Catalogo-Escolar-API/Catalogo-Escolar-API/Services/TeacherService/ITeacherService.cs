@@ -64,7 +64,7 @@ namespace Catalogo_Escolar_API.Services.StudentService
         /// <param name="studentId">Id of student </param>
         /// <param name="courseId">Id of course</param>
         /// <returns>Result of operation</returns>
-        Task<bool> DeleteStudentFromCourse(int studentId, int courseId);
+        Task<bool> DeleteStudentFromCourse(string studentName, string courseName);
 
         /// <summary>
         /// Returns a list of courses for the teacher with the provided id.

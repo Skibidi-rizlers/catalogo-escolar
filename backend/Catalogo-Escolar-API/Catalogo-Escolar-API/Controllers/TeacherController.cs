@@ -76,11 +76,11 @@ namespace Catalogo_Escolar_API.Controllers
         }
 
         [HttpDelete("delete-student-from-course")]
-        public async Task<IActionResult> DeleteStudentFromCourse([FromQuery] int studentId, [FromQuery] int courseId)
+        public async Task<IActionResult> DeleteStudentFromCourse([FromQuery] string studentName, [FromQuery] string courseName)
         {
-            if (studentId <= 0 || courseId <= 0)
+            if (string.IsNullOrEmpty(studentName) || string.IsNullOrEmpty(courseName))
                 return BadRequest("Course data is incorrect");
-            var result = await _teacherService.DeleteStudentFromCourse(studentId, courseId);
+            var result = await _teacherService.DeleteStudentFromCourse(studentName, courseName);
             if (result)
                 return Ok("Student deleted from course");
             else

@@ -15,7 +15,12 @@
     <ul>
       <li *ngFor="let student of course.students">
         {{ student.name }}
+        <button (click)="removeStudent(student.name, course.name)">Remove Student</button>
       </li>
     </ul>
   </div>
+</div>
+<div class="add-course-form">
+  <input type="text" [(ngModel)]="newCourseName" placeholder="Enter course name">
+  <button (click)="addCourse()">Add Course</button>
 </div>

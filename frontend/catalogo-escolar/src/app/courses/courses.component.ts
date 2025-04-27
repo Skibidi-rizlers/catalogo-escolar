@@ -15,6 +15,7 @@ export class CourseListComponent {
 
   editingIndex: number | null = null;
   updatedName: string = '';
+  newCourseName: string = '';
 
   constructor(private teacherService:TeacherService){
     teacherService.getCourses().subscribe((data: Course[]) => {
@@ -44,5 +45,23 @@ export class CourseListComponent {
     this.teacherService.deleteCourse(this.courses[index]);
     this.courses.splice(index, 1);
     this.cancelEdit();
+  }
+  addCourse() {
+    if (this.newCourseName.trim()) {
+      const newCourse: Course = {
+        name: this.newCourseName,
+        students: [],
+      };
+      this.teacherService.addCourse(this.newCourseName);
+      this.courses.push(newCourse);
+      this.newCourseName = '';
+    }
+  }
+  removeStudent(studentName: string, courseName: string) {
+    this.teacherService.deleteStudentFromCourse(studentName, courseName);
+    const course = this.courses.find(course => course.name === courseName);
+    if (course) {
+      course.students = course.students.filter(student => student.name !== studentName);
+    }
   }
 }
