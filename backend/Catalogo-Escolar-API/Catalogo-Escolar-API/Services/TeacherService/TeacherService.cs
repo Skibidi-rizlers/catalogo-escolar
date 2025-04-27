@@ -251,5 +251,32 @@ namespace Catalogo_Escolar_API.Services.TeacherService
             return Task.FromResult(students);
         }
 
+        /// <inheritdoc/>
+        public Task<ClassDTO?> GetTeacherCourse(int teacherId, string courseName)
+        {
+            var teacher = _context.Teachers.FirstOrDefault(t => t.Id == teacherId);
+            if (teacher == null)
+                return Task.FromResult<ClassDTO?>(null);
+
+            var course = _context.Classes
+                .FirstOrDefault(c => c.Name == courseName && c.TeacherId == teacherId);
+
+            if (course == null)
+                return Task.FromResult<ClassDTO?>(null);
+
+            var courseDTO = new ClassDTO
+            {
+                Name = course.Name,
+                Students = _context.StudentClasses
+                    .Where(sc => sc.ClassId == course.Id)
+                    .Select(sc => new StudentDTO
+                    {
+                        Name = sc.Student.User.FirstName + " " + sc.Student.User.LastName
+                    }).ToList()
+            };
+
+            return Task.FromResult<ClassDTO?>(courseDTO);
+        }
+
     }
 }

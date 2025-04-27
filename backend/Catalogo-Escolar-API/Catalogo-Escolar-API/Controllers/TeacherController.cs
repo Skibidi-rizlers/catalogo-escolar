@@ -1,5 +1,7 @@
 ﻿using Catalogo_Escolar_API.Services.StudentService;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace Catalogo_Escolar_API.Controllers
 {
@@ -16,54 +18,117 @@ namespace Catalogo_Escolar_API.Controllers
         }
 
         [HttpDelete("delete-course")]
-        public async Task<IActionResult> DeleteCourse([FromQuery] string courseName, [FromQuery] int teacherId)
+        [Authorize(Roles = "teacher")]
+        public async Task<IActionResult> DeleteCourse([FromQuery] string courseName)
         {
-            if (teacherId <= 0 || string.IsNullOrEmpty(courseName))
-                return BadRequest("Course data is incorrect");
-            var result = await _teacherService.DeleteCourse(courseName, teacherId);
-            if (result)
-                return Ok("Course deleted");
-            else
-                return BadRequest("Failed to delete course");
+            try
+            {
+                var teacherId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
+                if (teacherId <= 0 || string.IsNullOrEmpty(courseName))
+                    return BadRequest("Course data is incorrect");
+                var result = await _teacherService.DeleteCourse(courseName, teacherId);
+                if (result)
+                    return Ok("Course deleted");
+                else
+                    return BadRequest("Failed to delete course");
+
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.Message);
+                return StatusCode(500, "Internal server error.");
+            }
         }
 
         [HttpPost("add-course")]
-        public async Task<IActionResult> AddCourse([FromQuery] int teacherId, [FromQuery] string courseName)
+        [Authorize(Roles = "teacher")]
+        public async Task<IActionResult> AddCourse([FromQuery] string courseName)
         {
-            if (teacherId <= 0 || string.IsNullOrEmpty(courseName))
-                return BadRequest("Course data is incorrect");
-            var result = await _teacherService.AddCourse(teacherId, courseName);
-            if (result)
-                return Ok("Course added");
-            else
-                return BadRequest("Failed to add course");
+            try
+            {
+                var teacherId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
+                if (teacherId <= 0 || string.IsNullOrEmpty(courseName))
+                    return BadRequest("Course data is incorrect");
+                var result = await _teacherService.AddCourse(teacherId, courseName);
+                if (result)
+                    return Ok("Course added");
+                else
+                    return BadRequest("Failed to add course");
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.Message);
+                return StatusCode(500, "Internal server error.");
+            }
         }
 
         [HttpPatch("modify-course")]
-        public async Task<IActionResult> ModifyCourse([FromQuery] int teacherId, [FromQuery] string courseName, [FromQuery] string oldCourseName)
+        [Authorize(Roles = "teacher")]
+        public async Task<IActionResult> ModifyCourse([FromQuery] string courseName, [FromQuery] string oldCourseName)
         {
-            if (teacherId <= 0 || string.IsNullOrEmpty(courseName) || string.IsNullOrEmpty(oldCourseName))
-                return BadRequest("Course data is incorrect");
-            var result = await _teacherService.ModifyCourse(oldCourseName, teacherId, courseName);
-            if (result)
-                return Ok("Course modified");
-            else
-                return BadRequest("Failed to modify course");
+            try
+            {
+                var teacherId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
+                if (teacherId <= 0 || string.IsNullOrEmpty(courseName) || string.IsNullOrEmpty(oldCourseName))
+                    return BadRequest("Course data is incorrect");
+                var result = await _teacherService.ModifyCourse(oldCourseName, teacherId, courseName);
+                if (result)
+                    return Ok("Course modified");
+                else
+                    return BadRequest("Failed to modify course");
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.Message);
+                return StatusCode(500, "Internal server error.");
+            }
         }
 
         [HttpGet("get-teacher-courses")]
-        public async Task<IActionResult> GetTeacherCourses([FromQuery] int teacherId)
+        [Authorize(Roles = "teacher")]
+        public async Task<IActionResult> GetTeacherCourses()
         {
-            if (teacherId <= 0)
-                return BadRequest("Teacher data is incorrect");
-            var result = await _teacherService.GetTeacherCourses(teacherId);
-            if (result != null)
-                return Ok(result);
-            else
-                return NotFound("No courses found for this teacher");
+            try
+            {
+                var teacherId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
+                if (teacherId <= 0)
+                    return BadRequest("Teacher data is invalid");
+                var result = await _teacherService.GetTeacherCourses(teacherId);
+                if (result != null)
+                    return Ok(result);
+                else
+                    return NotFound("No courses found for this teacher");
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.Message);
+                return StatusCode(500, "Internal server error.");
+            }
+        }
+        [HttpGet("get-teacher-course")]
+        [Authorize(Roles = "teacher")]
+        public async Task<IActionResult> GetTeacherCourse([FromQuery] string courseName)
+        {
+            try
+            {
+                var teacherId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
+                if (teacherId <= 0)
+                    return BadRequest("Teacher data is invalid");
+                var result = await _teacherService.GetTeacherCourse(teacherId, courseName);
+                if (result != null)
+                    return Ok(result);
+                else
+                    return NotFound("No courses found for this teacher");
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.Message);
+                return StatusCode(500, "Internal server error.");
+            }
         }
 
         [HttpPost("add-student-to-course")]
+        [Authorize(Roles = "teacher")]
         public async Task<IActionResult> AddStudentToCourse([FromQuery] string studentName, [FromQuery] string courseName)
         {
             if (string.IsNullOrEmpty(studentName) || string.IsNullOrEmpty(courseName))
@@ -76,6 +141,7 @@ namespace Catalogo_Escolar_API.Controllers
         }
 
         [HttpDelete("delete-student-from-course")]
+        [Authorize(Roles = "teacher")]
         public async Task<IActionResult> DeleteStudentFromCourse([FromQuery] string studentName, [FromQuery] string courseName)
         {
             if (string.IsNullOrEmpty(studentName) || string.IsNullOrEmpty(courseName))
@@ -88,6 +154,7 @@ namespace Catalogo_Escolar_API.Controllers
         }
 
         [HttpGet("get-students")]
+        [Authorize(Roles = "teacher")]
         public async Task<IActionResult> GetStudents()
         {
             var result = await _teacherService.GetStudents();

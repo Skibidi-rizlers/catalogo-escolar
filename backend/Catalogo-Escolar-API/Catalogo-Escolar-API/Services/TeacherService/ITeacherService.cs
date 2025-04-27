@@ -72,6 +72,13 @@ namespace Catalogo_Escolar_API.Services.StudentService
         /// <param name="teacherId">Id of teacher</param>
         /// <returns>List of courses</returns>
         Task<List<ClassDTO>> GetTeacherCourses(int teacherId);
+        /// <summary>
+        /// Returns a course for the teacher with the provided id and name.
+        /// </summary>
+        /// <param name="teacherId"></param>
+        /// <param name="courseName"></param>
+        /// <returns></returns>
+        Task<ClassDTO?> GetTeacherCourse(int teacherId, string courseName);
 
         /// <summary>
         /// Returns a list of students.

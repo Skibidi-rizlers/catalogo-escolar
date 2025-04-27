@@ -36,7 +36,7 @@ namespace Catalogo_Escolar_API.Helpers
             var tokenDescriptor = new SecurityTokenDescriptor
             {
                 Subject = GenerateClaims(user),
-                Expires = DateTime.UtcNow.AddMinutes(15),
+                Expires = DateTime.UtcNow.AddMinutes(30),
                 SigningCredentials = credentials,
             };
 

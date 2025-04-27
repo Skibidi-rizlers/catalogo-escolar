@@ -7,6 +7,7 @@ import { AuthGuard } from './_helpers/auth-guard';
 import { TeacherDashboardComponent } from './teacher-dashboard/teacher-dashboard.component';
 import { ResetPasswordComponent } from './reset-password/reset-password.component';
 import { MyProfileComponent } from './my-profile/my-profile.component';
+import { CourseComponent } from './course/course.component';
 
 export const routes: Routes = [
   { path: 'profile', component: MyProfileComponent, canActivate: [AuthGuard] },
@@ -16,6 +17,7 @@ export const routes: Routes = [
   { path: 'reset-password/:id', component: ResetPasswordComponent },
   { path: 'student-dashboard', component: StudentDashboardComponent, canActivate: [RoleGuard], data: { role: 'student' } },
   { path: 'teacher-dashboard', component: TeacherDashboardComponent, canActivate: [RoleGuard], data: { role: 'teacher' } },
+  { path: 'course/:courseName', component: CourseComponent, canActivate: [AuthGuard] },
   { path: '', redirectTo: 'login', pathMatch: 'full' },
   { path: '**', redirectTo: 'login' }
 ];

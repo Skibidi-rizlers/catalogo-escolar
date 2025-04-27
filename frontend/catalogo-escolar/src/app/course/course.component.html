@@ -1,0 +1,36 @@
+<div class="course-details" *ngIf="course">
+    <h1>{{ course.name }}</h1>
+
+    <!-- Toggle buttons -->
+    <div class="toggle-buttons">
+        <button (click)="view = 'students'">Students</button>
+        <button (click)="view = 'assignments'">Assignments</button>
+    </div>
+
+    <!-- Conditionally show Students -->
+    <div *ngIf="view === 'students'">
+        <div class="add-student-to-course">
+            <label for="studentSelect">Add Student:</label>
+            <select id="studentSelect" [(ngModel)]="selectedStudent">
+                <option *ngFor="let student of availableStudents" [ngValue]="student">{{ student.name }}</option>
+            </select>
+            <button (click)="addStudentToCourse()">Add</button>
+        </div>
+
+        <h3>Students:</h3>
+        <div class="students-list">
+            <div class="student-card" *ngFor="let student of course.students; let i = index">
+                <div class="student-info">
+                    <p>{{ student.name }}</p>
+                </div>
+                <button class="delete-button" (click)="removeStudent(i)">✖</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Conditionally show Assignments -->
+    <div *ngIf="view === 'assignments'">
+        <h3>Assignments:</h3>
+        <p>Assignment list will go here...</p>
+    </div>
+</div>
