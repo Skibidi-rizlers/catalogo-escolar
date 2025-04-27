@@ -9,13 +9,15 @@ namespace Catalogo_Escolar_API.Services.AssignmentService
     public class AssignmentService : IAssignmentService
     {
         private readonly SchoolContext _context;
+        private readonly ILogger<AssignmentService> _logger;
         /// <summary>
         /// Constructor of Assignment service class
         /// </summary>
         /// <param name="context">Database context</param>
-        public AssignmentService(SchoolContext context)
+        public AssignmentService(SchoolContext context, ILogger<AssignmentService> logger)
         {
             _context = context;
+            _logger = logger;
         }
 
         /// <inheritdoc/>
@@ -29,7 +31,12 @@ namespace Catalogo_Escolar_API.Services.AssignmentService
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex.Message);
+                Exception? loggedException = ex;
+                while(loggedException.InnerException != null)
+                {
+                    loggedException = loggedException.InnerException;
+                }
+                _logger.LogError(loggedException.Message);
                 return Task.FromResult(false);
             }
         }
@@ -50,7 +57,12 @@ namespace Catalogo_Escolar_API.Services.AssignmentService
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex.Message);
+                Exception? loggedException = ex;
+                while (loggedException.InnerException != null)
+                {
+                    loggedException = loggedException.InnerException;
+                }
+                _logger.LogError(loggedException.Message);
                 return Task.FromResult(false);
             }
         }
@@ -91,7 +103,12 @@ namespace Catalogo_Escolar_API.Services.AssignmentService
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex.Message);
+                Exception? loggedException = ex;
+                while (loggedException.InnerException != null)
+                {
+                    loggedException = loggedException.InnerException;
+                }
+                _logger.LogError(loggedException.Message);
                 return Task.FromResult(false);
             }
         }

@@ -19,5 +19,34 @@
         {
             return $"LoginPayload (email: {Email}, password: {Password})";
         }
+
+        /// <summary>
+        /// Checks if the payload is valid.
+        /// </summary>
+        /// <returns>Validity</returns>
+        public bool IsValid()
+        {
+            if(string.IsNullOrEmpty(Email) || string.IsNullOrEmpty(Password))
+            {
+                return false;
+            }
+
+            if (Password.Length < 5)
+            {
+                return false;
+            }
+
+            if (!Email.Contains('@') || !Email.Contains('.'))
+            {
+                return false;
+            }
+
+            if(!Email.EndsWith("@student.com") || !Email.EndsWith("@teacher.com"))
+            {
+                return false;
+            }
+
+            return true;
+        }
     }
 }

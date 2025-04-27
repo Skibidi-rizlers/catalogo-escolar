@@ -1,7 +1,10 @@
-﻿using Catalogo_Escolar_API.Model;
+﻿using Catalogo_Escolar_API.Migrations;
+using Catalogo_Escolar_API.Model;
 using Catalogo_Escolar_API.Model.Payloads.Assignment;
 using Catalogo_Escolar_API.Services.AuthService;
+using Catalogo_Escolar_API.Services.CourseService;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Cors.Infrastructure;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 
@@ -28,12 +31,12 @@ namespace Catalogo_Escolar_API.Controllers
         /// Creates a new assignment with data provided in body
         /// </summary>
         /// <param name="payload"></param>
+        /// <param name="courseService"></param>
         /// <returns></returns>
         [HttpPost("post")]
         [Authorize(Roles = "teacher")]
-        public async Task<ActionResult<bool>> CreateAssignment([FromBody] CreateAssignmentPayload payload)
+        public async Task<ActionResult<bool>> CreateAssignment([FromBody] CreateAssignmentPayload payload, ICourseService courseService)
         {
-            return Ok(true);
             try
             {
                 var teacherId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
@@ -46,8 +49,11 @@ namespace Catalogo_Escolar_API.Controllers
                     DueDate = payload.DueDate
                 };
 
-                //TODO: get class by id
-                //TODO: check if class teacher id is the same as the one in the request (don't allow teachers to create assignments for other classes)
+                Class? course = await courseService.GetCourseForIdAndTeacher(payload.ClassId, teacherId);
+                if (course == null)
+                {
+                    return BadRequest("You do not have a course with this id.");
+                }
 
                 bool result = await _assignmentService.AddAssignment(newAssignment);
                 return Ok(result);
@@ -63,17 +69,27 @@ namespace Catalogo_Escolar_API.Controllers
         /// Deletes the assignment with id provided in query parameters
         /// </summary>
         /// <param name="assignmentId"></param>
+        /// <param name="courseService"></param>
         /// <returns>Result of operation</returns>
         [HttpDelete("delete")]
         [Authorize(Roles = "teacher")]
-        public async Task<ActionResult<bool>> DeleteAssignment([FromQuery] int assignmentId)
+        public async Task<ActionResult<bool>> DeleteAssignment([FromQuery] int assignmentId, ICourseService courseService)
         {
             try
             {
                 var teacherId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
 
-                //TODO: get class by id
-                //TODO: check if class teacher id is the same as the one in the request (don't allow teachers to create assignments for other classes)
+                Assignment? assignment = await _assignmentService.GetAssignmentById(assignmentId);
+                if (assignment == null)
+                {
+                    return BadRequest("Assignment not found");
+                }
+
+                Class? course = await courseService.GetCourseForIdAndTeacher(assignment.ClassId, teacherId);
+                if (course == null)
+                {
+                    return BadRequest("You do not have a course with this id.");
+                }
 
                 bool result = await _assignmentService.DeleteAssignment(assignmentId);
                 return Ok(result);
@@ -88,10 +104,11 @@ namespace Catalogo_Escolar_API.Controllers
         /// Updates the assignment with data provided in body
         /// </summary>
         /// <param name="payload"></param>
+        /// <param name="courseService"></param>
         /// <returns></returns>
         [HttpPatch("update")]
         [Authorize(Roles = "teacher")]
-        public async Task<ActionResult<bool>> UpdateAssignment([FromBody] UpdateAssignmentPayload payload)
+        public async Task<ActionResult<bool>> UpdateAssignment([FromBody] UpdateAssignmentPayload payload, ICourseService courseService)
         {
             try
             {
@@ -105,8 +122,12 @@ namespace Catalogo_Escolar_API.Controllers
                     DueDate = payload.DueDate
                 };
 
-                //TODO: get class by id
-                //TODO: check if class teacher id is the same as the one in the request (don't allow teachers to create assignments for other classes)
+
+                Class? course = await courseService.GetCourseForIdAndTeacher(updatedAssignment.ClassId, teacherId);
+                if (course == null)
+                {
+                    return BadRequest("You do not have a course with this id.");
+                }
 
                 bool result = await _assignmentService.UpdateAssignment(updatedAssignment);
                 return Ok(result);

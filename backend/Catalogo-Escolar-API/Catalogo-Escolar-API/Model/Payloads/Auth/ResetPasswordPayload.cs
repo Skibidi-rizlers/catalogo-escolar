@@ -19,5 +19,18 @@
         {
             return $"ResetPasswordPayload (encodedId: {EncodedId}, password: {Password})";
         }
+        /// <summary>
+        /// Checks if the payload is valid.
+        /// </summary>
+        /// <returns>Validity</returns>
+        public bool IsValid()
+        {
+            if (Password.Length < 5)
+            {
+                return false;
+            }
+
+            return true;
+        }
     }
 }
