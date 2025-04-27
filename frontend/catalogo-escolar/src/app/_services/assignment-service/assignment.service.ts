@@ -16,12 +16,16 @@ export class AssignmentService {
     constructor(private http: HttpClient) {
     }
 
-    createAssignment(classId: Number, title: string, description: string, dueDate: string): Observable<any> {
-        const options = {
-            ...this.httpOptions,
-            params: { classId, title, description, dueDate },
+    createAssignment(classId: number, title: string, description: string, dueDate: string): Observable<any> {
+        const payload = {
+            classId,
+            title,
+            description,
+            dueDate: new Date(dueDate).toISOString()
         };
-        return this.http.post<any>(`${this.ASSIGNMENT_API_URL}/post`, options);
+
+        return this.http.post<any>(`${this.ASSIGNMENT_API_URL}/post`, payload,
+            { headers: this.httpOptions.headers, responseType: 'text' as 'json' });
     }
 
     getAssignments(courseId: number): Observable<any[]> {
@@ -30,5 +34,13 @@ export class AssignmentService {
             params: { courseId: courseId.toString() },
         };
         return this.http.get<any[]>(`${this.ASSIGNMENT_API_URL}/course`, options);
+    }
+
+    deleteAssignment(assignmentId: number) {
+        const options = {
+            ...this.httpOptions,
+            params: { assignmentId: assignmentId.toString() },
+        };
+        return this.http.delete<any>(`${this.ASSIGNMENT_API_URL}/delete`, options);
     }
 }

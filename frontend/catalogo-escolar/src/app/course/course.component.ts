@@ -23,6 +23,12 @@ export class CourseComponent {
   availableStudents: Student[] = [];
   assignments: Assignment[] = [];
   selectedStudent: Student | null = null;
+  newAssignment: Assignment = {
+    title: '',
+    description: '',
+    dueDate: '',
+    id: 0
+  };
 
   constructor(private route: ActivatedRoute, private title: Title, private router: Router, private snackbarService: SnackbarService,
     private teacherService: TeacherService, private assignmentService: AssignmentService, public datePipe: DatePipe) {
@@ -41,12 +47,7 @@ export class CourseComponent {
           next: (courseDetails) => {
             this.course = courseDetails;
             this.title.setTitle(courseDetails.name);
-
-            this.assignmentService.getAssignments(this.course.id).subscribe((data: any[]) => {
-              this.assignments = data;
-              console.log(data);
-            });
-
+            this.refreshAssignments();
           },
           error: (error) => {
             this.snackbarService.error('Failed to load course details.');
@@ -72,10 +73,45 @@ export class CourseComponent {
     }
   }
 
+  refreshAssignments() {
+    this.assignmentService.getAssignments(this.course.id).subscribe((data: any[]) => {
+      this.assignments = data;
+    });
+  }
+
   removeStudent(index: number) {
     console.log(this.course);
-    console.log('Removing student:', this.course.students[index].name, 'from course:', this.course.name);
     this.teacherService.deleteStudentFromCourse(this.course.students[index].name, this.course.name);
+    this.snackbarService.success('Student removed successfully!');
     this.course.students.splice(index, 1);
+  }
+
+  createAssignment() {
+    if (this.newAssignment.title && this.newAssignment.description && this.newAssignment.dueDate) {
+      this.assignmentService.createAssignment(this.course.id, this.newAssignment.title, this.newAssignment.description, this.newAssignment.dueDate).subscribe(
+        response => {
+          this.snackbarService.success('Assignment created successfully!');
+          this.refreshAssignments();
+          this.view = 'assignments';
+        },
+        error => {
+          this.snackbarService.error('Failed to create assignment.');
+        }
+      );
+    } else {
+      this.snackbarService.error('All fields are required.');
+    }
+  }
+
+  deleteAssignment(index: number) {
+    this.assignmentService.deleteAssignment(this.assignments[index].id).subscribe(
+      response => {
+        this.snackbarService.success('Assignment deleted successfully!');
+        this.refreshAssignments();
+      },
+      error => {
+        this.snackbarService.error('Failed to delete assignment.');
+      }
+    );
   }
 }

@@ -1,13 +1,12 @@
 <div class="course-details" *ngIf="course">
     <h1>{{ course.name }}</h1>
 
-    <!-- Toggle buttons -->
     <div class="toggle-buttons">
         <button (click)="view = 'students'">Students</button>
         <button (click)="view = 'assignments'">Assignments</button>
+        <button (click)="view = 'createAssignment'">Create Assignment</button>
     </div>
 
-    <!-- Conditionally show Students -->
     <div *ngIf="view === 'students'">
         <div class="add-student-to-course">
             <label for="studentSelect">Add Student:</label>
@@ -19,6 +18,9 @@
 
         <h3>Students:</h3>
         <div class="students-list">
+            <div *ngIf="course.students.length === 0" class="no-students-message">
+                No students available.
+            </div>
             <div class="student-card" *ngFor="let student of course.students; let i = index">
                 <div class="student-info">
                     <p>{{ student.name }}</p>
@@ -28,6 +30,7 @@
         </div>
     </div>
 
+
     <div *ngIf="view === 'assignments'">
         <h3>Assignments:</h3>
         <div *ngIf="assignments.length > 0; else noAssignments" class="assignments-list">
@@ -35,13 +38,36 @@
                 <div class="assignment-info">
                     <h4>{{ assignment.title }}</h4>
                     <p><strong>Description:</strong> {{ assignment.description }}</p>
-                    <p><strong>Due Date:</strong> <span class="due-date">
-                            {{ datePipe.transform(assignment.dueDate, 'dd/MM/yy, hh:mm a') }}</span></p>
+                    <p><strong>Due Date:</strong>
+                        <span class="due-date"> {{ datePipe.transform(assignment.dueDate, 'dd/MM/yy, hh:mm a') }}</span>
+                    </p>
                 </div>
+                <button class="delete-button" (click)="deleteAssignment(i)">Delete</button>
             </div>
         </div>
         <ng-template #noAssignments>
             <p class="no-assignments-message">No assignments available.</p>
         </ng-template>
+    </div>
+
+
+    <div *ngIf="view === 'createAssignment'">
+        <h3>Create New Assignment:</h3>
+        <form (ngSubmit)="createAssignment()">
+            <div>
+                <label for="title">Title:</label>
+                <input type="text" id="title" [(ngModel)]="newAssignment.title" name="title" required>
+            </div>
+            <div>
+                <label for="description">Description:</label>
+                <textarea id="description" [(ngModel)]="newAssignment.description" name="description"
+                    required></textarea>
+            </div>
+            <div>
+                <label for="dueDate">Due Date:</label>
+                <input type="datetime-local" id="dueDate" [(ngModel)]="newAssignment.dueDate" name="dueDate" required>
+            </div>
+            <button type="submit">Create Assignment</button>
+        </form>
     </div>
 </div>
