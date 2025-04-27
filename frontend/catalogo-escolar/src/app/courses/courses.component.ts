@@ -3,6 +3,7 @@ import { Course } from '../_models/course';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { TeacherService } from '../_services/teacher/teacher.service';
+import { Student } from '../_models/student';
 
 @Component({
   selector: 'app-courses',
@@ -16,12 +17,20 @@ export class CourseListComponent {
   editingIndex: number | null = null;
   updatedName: string = '';
   newCourseName: string = '';
+  availableStudents: Student[] = [];
+  selectedStudent: Student | null = null;
+  selectedCourse: Course | null = null;
 
   constructor(private teacherService:TeacherService){
     teacherService.getCourses().subscribe((data: Course[]) => {
       this.courses = data;
     });
+    teacherService.getStudents().subscribe((data: Student[]) => {
+      this.availableStudents = data;
+    }
+    );
   }
+
   startEdit(index: number) {
     this.editingIndex = index;
     this.updatedName = this.courses[index].name;
@@ -62,6 +71,20 @@ export class CourseListComponent {
     const course = this.courses.find(course => course.name === courseName);
     if (course) {
       course.students = course.students.filter(student => student.name !== studentName);
+    }
+  }
+
+  addStudentToCourse() {
+    if (this.selectedStudent && this.selectedCourse) {
+      if (this.selectedCourse.students.some(student => student.name === this.selectedStudent?.name)) {
+        alert("Student already exists in the course.");
+        return;
+      }
+
+      this.teacherService.addStudentToCourse(this.selectedStudent.name, this.selectedCourse.name);
+      this.selectedCourse.students.push(this.selectedStudent);
+    } else {
+      alert("Please select both a student and a course.");
     }
   }
 }

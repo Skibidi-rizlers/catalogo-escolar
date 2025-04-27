@@ -24,3 +24,14 @@
   <input type="text" [(ngModel)]="newCourseName" placeholder="Enter course name">
   <button (click)="addCourse()">Add Course</button>
 </div>
+
+<div class="add-student-to-course">
+  <label for="studentSelect">Add Student:</label>
+  <select id="studentSelect" [(ngModel)]="selectedStudent">
+    <option *ngFor="let student of availableStudents" [ngValue]="student">{{ student.name }}</option>
+  </select>
+  <select id="studentSelect" [(ngModel)]="selectedCourse">
+    <option *ngFor="let course of courses" [ngValue]="course">{{ course.name }}</option>
+  </select>
+  <button (click)="addStudentToCourse()">Add</button>
+</div>

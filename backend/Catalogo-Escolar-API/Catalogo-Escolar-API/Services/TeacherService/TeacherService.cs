@@ -147,18 +147,18 @@ namespace Catalogo_Escolar_API.Services.TeacherService
             }
         }
         /// <inheritdoc/>
-        public Task<bool> AddStudentToCourse(int studentId, int courseId)
+        public Task<bool> AddStudentToCourse(string studentName, string courseName)
         {
             //check if student exists
-            var student = _context.Students.FirstOrDefault(s => s.Id == studentId);
+            var student = _context.Students.FirstOrDefault(s => s.User.FirstName+' '+s.User.LastName == studentName);
             if (student == null)
                 return Task.FromResult(false);
             //check if course exists
-            var course = _context.Classes.FirstOrDefault(c => c.Id == courseId);
+            var course = _context.Classes.FirstOrDefault(c => c.Name == courseName);
             if (course == null)
                 return Task.FromResult(false);
             //check if student is already in course
-            var studentClass = _context.StudentClasses.FirstOrDefault(sc => sc.StudentId == studentId && sc.ClassId == courseId);
+            var studentClass = _context.StudentClasses.FirstOrDefault(sc => sc.StudentId == student.Id && sc.ClassId == course.Id);
             if (studentClass != null)
                 return Task.FromResult(false);
             //add student to course
@@ -166,8 +166,8 @@ namespace Catalogo_Escolar_API.Services.TeacherService
             {
                 var newStudentClass = new StudentClass()
                 {
-                    StudentId = studentId,
-                    ClassId = courseId,
+                    StudentId = student.Id,
+                    ClassId = course.Id,
                     EnrolledAt = DateTime.Now
                 };
                 _context.StudentClasses.Add(newStudentClass);
@@ -236,6 +236,19 @@ namespace Catalogo_Escolar_API.Services.TeacherService
                 courseDTOs.Add(courseDTO);
             }
             return Task.FromResult(courseDTOs);
+        }
+
+        ///<inheritdoc/>
+        public Task<List<StudentDTO>> GetStudents()
+        {
+            var students = _context.Students
+                .Include(s => s.User)
+                .Select(s => new StudentDTO
+                {
+                   Name = s.User.FirstName + " " + s.User.LastName,
+                })
+                .ToList();
+            return Task.FromResult(students);
         }
 
     }

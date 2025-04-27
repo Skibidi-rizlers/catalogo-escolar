@@ -18,7 +18,7 @@ namespace Catalogo_Escolar_API.Controllers
         [HttpDelete("delete-course")]
         public async Task<IActionResult> DeleteCourse([FromQuery] string courseName, [FromQuery] int teacherId)
         {
-            if (teacherId <= 0|| string.IsNullOrEmpty(courseName))
+            if (teacherId <= 0 || string.IsNullOrEmpty(courseName))
                 return BadRequest("Course data is incorrect");
             var result = await _teacherService.DeleteCourse(courseName, teacherId);
             if (result)
@@ -64,11 +64,11 @@ namespace Catalogo_Escolar_API.Controllers
         }
 
         [HttpPost("add-student-to-course")]
-        public async Task<IActionResult> AddStudentToCourse([FromQuery] int studentId, [FromQuery] int courseId)
+        public async Task<IActionResult> AddStudentToCourse([FromQuery] string studentName, [FromQuery] string courseName)
         {
-            if (studentId <= 0 || courseId <= 0)
+            if (string.IsNullOrEmpty(studentName) || string.IsNullOrEmpty(courseName))
                 return BadRequest("Course data is incorrect");
-            var result = await _teacherService.AddStudentToCourse(studentId, courseId);
+            var result = await _teacherService.AddStudentToCourse(studentName, courseName);
             if (result)
                 return Ok("Student added to course");
             else
@@ -87,5 +87,14 @@ namespace Catalogo_Escolar_API.Controllers
                 return BadRequest("Failed to delete student from course");
         }
 
+        [HttpGet("get-students")]
+        public async Task<IActionResult> GetStudents()
+        {
+            var result = await _teacherService.GetStudents();
+            if (result != null)
+                return Ok(result);
+            else
+                return NotFound("No students found");
+        }
     }
 }

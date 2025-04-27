@@ -91,5 +91,26 @@ export class TeacherService {
     );
   }
 
+  getStudents():Observable<any[]>{
+    const options = {
+      ...this.httpOptions,
+      params: { teacherId: this.teacherId || '' },
+    };
+
+    return this.http.get<any[]>(`${this.TEACHER_API_URL}/get-students`, options);
+  }
+
+  addStudentToCourse(studentName: string, courseName: string): void {
+    const options = {
+      ...this.httpOptions,
+      params: { teacherId: this.teacherId || '' , studentName: studentName, courseName: courseName},
+    };
+
+    this.http.post<any>(`${this.TEACHER_API_URL}/add-student-to-course`, {}, options).subscribe(
+      (response) => {
+        console.log('Student added successfully:', response);
+      }
+    );
+  }
 
 }

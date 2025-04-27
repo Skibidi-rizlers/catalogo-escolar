@@ -58,7 +58,7 @@ namespace Catalogo_Escolar_API.Services.StudentService
         /// <param name="studentId">Id of student </param>
         /// <param name="courseId">Id of course</param>
         /// <returns>Result of operation</returns>
-        Task<bool> AddStudentToCourse(int studentId, int courseId);
+        Task<bool> AddStudentToCourse(string studentName, string courseName);
         /// <summary>
         /// Deletes a student from a course with the provided id.
         /// <param name="studentId">Id of student </param>
@@ -72,5 +72,11 @@ namespace Catalogo_Escolar_API.Services.StudentService
         /// <param name="teacherId">Id of teacher</param>
         /// <returns>List of courses</returns>
         Task<List<ClassDTO>> GetTeacherCourses(int teacherId);
+
+        /// <summary>
+        /// Returns a list of students.
+        /// </summary>
+        /// <returns>List of students</returns>
+        Task<List<StudentDTO>> GetStudents();
     }
 }
