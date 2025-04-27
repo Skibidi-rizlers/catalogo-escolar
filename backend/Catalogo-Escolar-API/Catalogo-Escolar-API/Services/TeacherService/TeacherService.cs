@@ -87,5 +87,125 @@ namespace Catalogo_Escolar_API.Services.TeacherService
                 return Task.FromResult(false);
             }
         }
+        /// <inheritdoc/>
+        public Task<bool> AddCourse(int teacherId, string courseName)
+        {
+            var teacher = _context.Teachers.FirstOrDefault(t => t.Id == teacherId);
+            if (teacher == null)
+                return Task.FromResult(false);
+            var existingCourse = _context.Classes.FirstOrDefault(c => c.Name == courseName && c.TeacherId == teacherId);
+            if (existingCourse != null)
+                return Task.FromResult(false);
+            try
+            {
+                var course = new Class()
+                {
+                    Name = courseName,
+                    TeacherId = teacherId
+                };
+                _context.Classes.Add(course);
+                _context.SaveChanges();
+                return Task.FromResult(true);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                return Task.FromResult(false);
+            }
+        }
+        /// <inheritdoc/>
+        public Task<bool> ModifyCourse(string oldCourseName, int teacherId, string courseName)
+        {
+            if (teacherId <= 0 ||
+                string.IsNullOrEmpty(courseName) ||
+                string.IsNullOrEmpty(oldCourseName) ||
+                oldCourseName == courseName ||
+                courseName == null ||
+                oldCourseName == null ||
+                _context.Teachers.FirstOrDefault(t => t.Id == teacherId) == null ||
+                _context.Classes.FirstOrDefault(c => c.Name == courseName && c.TeacherId == teacherId) != null)
+            {
+                return Task.FromResult(false);
+            }
+            try
+            {
+                var course = _context.Classes.FirstOrDefault(c => c.Name == oldCourseName && c.TeacherId == teacherId);
+                if (course != null)
+                {
+                    course.Name = courseName;
+                    course.TeacherId = teacherId;
+                    _context.SaveChanges();
+                    return Task.FromResult(true);
+                }
+                return Task.FromResult(false);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                return Task.FromResult(false);
+            }
+        }
+        /// <inheritdoc/>
+        public Task<bool> AddStudentToCourse(int studentId, int courseId)
+        {
+            //check if student exists
+            var student = _context.Students.FirstOrDefault(s => s.Id == studentId);
+            if (student == null)
+                return Task.FromResult(false);
+            //check if course exists
+            var course = _context.Classes.FirstOrDefault(c => c.Id == courseId);
+            if (course == null)
+                return Task.FromResult(false);
+            //check if student is already in course
+            var studentClass = _context.StudentClasses.FirstOrDefault(sc => sc.StudentId == studentId && sc.ClassId == courseId);
+            if (studentClass != null)
+                return Task.FromResult(false);
+            //add student to course
+            try
+            {
+                var newStudentClass = new StudentClass()
+                {
+                    StudentId = studentId,
+                    ClassId = courseId,
+                    EnrolledAt = DateTime.Now
+                };
+                _context.StudentClasses.Add(newStudentClass);
+                _context.SaveChanges();
+                return Task.FromResult(true);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                return Task.FromResult(false);
+            }
+        }
+        /// <inheritdoc/>
+        public Task<bool> DeleteStudentFromCourse(int studentId, int courseId)
+        {
+            //check if student exists
+            var student = _context.Students.FirstOrDefault(s => s.Id == studentId);
+            if (student == null)
+                return Task.FromResult(false);
+            //check if course exists
+            var course = _context.Classes.FirstOrDefault(c => c.Id == courseId);
+            if (course == null)
+                return Task.FromResult(false);
+            //check if student is already in course
+            var studentClass = _context.StudentClasses.FirstOrDefault(sc => sc.StudentId == studentId && sc.ClassId == courseId);
+            if (studentClass == null)
+                return Task.FromResult(false);
+            //remove student from course
+            try
+            {
+                _context.StudentClasses.Remove(studentClass);
+                _context.SaveChanges();
+                return Task.FromResult(true);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                return Task.FromResult(false);
+            }
+        }
     }
 }
