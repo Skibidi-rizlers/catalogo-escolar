@@ -5,23 +5,27 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { AuthService } from '../_services/auth-service/auth.service';
 import { SnackbarService } from '../_services/snackbar-service/snackbar.service';
 import { TeacherService } from '../_services/teacher/teacher.service';
-import { CommonModule, NgFor } from '@angular/common';
+import { CommonModule, DatePipe, NgFor } from '@angular/common';
 import { Student } from '../_models/student';
+import { AssignmentService } from '../_services/assignment-service/assignment.service';
+import { Assignment } from '../_models/assignment';
 
 @Component({
   selector: 'app-course',
   imports: [FormsModule, CommonModule],
+  providers: [DatePipe],
   templateUrl: './course.component.html',
   styleUrl: './course.component.scss'
 })
 export class CourseComponent {
-  view = 'students';
+  view = 'assignments';
   course: any | undefined;
   availableStudents: Student[] = [];
+  assignments: Assignment[] = [];
   selectedStudent: Student | null = null;
 
   constructor(private route: ActivatedRoute, private title: Title, private router: Router, private snackbarService: SnackbarService,
-    private teacherService: TeacherService) {
+    private teacherService: TeacherService, private assignmentService: AssignmentService, public datePipe: DatePipe) {
     this.title.setTitle('Course');
 
     teacherService.getStudents().subscribe((data: Student[]) => {
@@ -35,9 +39,14 @@ export class CourseComponent {
       if (courseId) {
         this.teacherService.getCourseDetails(courseId).subscribe({
           next: (courseDetails) => {
-            console.log(courseDetails);
             this.course = courseDetails;
             this.title.setTitle(courseDetails.name);
+
+            this.assignmentService.getAssignments(this.course.id).subscribe((data: any[]) => {
+              this.assignments = data;
+              console.log(data);
+            });
+
           },
           error: (error) => {
             this.snackbarService.error('Failed to load course details.');

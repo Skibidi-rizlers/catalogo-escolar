@@ -266,6 +266,7 @@ namespace Catalogo_Escolar_API.Services.TeacherService
 
             var courseDTO = new ClassDTO
             {
+                Id = course.Id,
                 Name = course.Name,
                 Students = _context.StudentClasses
                     .Where(sc => sc.ClassId == course.Id)

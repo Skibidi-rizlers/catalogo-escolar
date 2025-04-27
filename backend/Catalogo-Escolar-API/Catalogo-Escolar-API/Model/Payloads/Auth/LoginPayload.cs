@@ -41,7 +41,7 @@
                 return false;
             }
 
-            if(!Email.EndsWith("@student.com") || !Email.EndsWith("@teacher.com"))
+            if(!Email.EndsWith("@student.com") && !Email.EndsWith("@teacher.com"))
             {
                 return false;
             }

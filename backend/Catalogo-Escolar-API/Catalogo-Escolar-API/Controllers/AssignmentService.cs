@@ -58,7 +58,7 @@ namespace Catalogo_Escolar_API.Controllers
                 bool result = await _assignmentService.AddAssignment(newAssignment);
                 return Ok(result);
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 Console.WriteLine(ex.Message);
                 return BadRequest(ex.Message);
@@ -94,7 +94,7 @@ namespace Catalogo_Escolar_API.Controllers
                 bool result = await _assignmentService.DeleteAssignment(assignmentId);
                 return Ok(result);
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 Console.WriteLine(ex.Message);
                 return BadRequest(ex.Message);
@@ -138,5 +138,42 @@ namespace Catalogo_Escolar_API.Controllers
                 return BadRequest(ex.Message);
             }
         }
+
+        [HttpGet("course")]
+        [Authorize(Roles = "teacher")]
+        public async Task<ActionResult<List<AssignmentDTO>>> GetAssignmentsForCourse([FromQuery] int courseId, ICourseService courseService)
+        {
+            try
+            {
+                var teacherId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
+                Class? course = await courseService.GetCourseForIdAndTeacher(courseId, teacherId);
+                if (course == null)
+                {
+                    return BadRequest("You do not have a course with this id.");
+                }
+                List<Assignment> assignments = await _assignmentService.GetAssignmentsByClassId(courseId);
+                List<AssignmentDTO> assignmentDTOs = assignments.Select(a => new AssignmentDTO
+                {
+                    Id = a.Id,
+                    Title = a.Title,
+                    Description = a.Description,
+                    DueDate = a.DueDate
+                }).ToList();
+                return Ok(assignmentDTOs);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                return BadRequest(ex.Message);
+            }
+        }
+    }
+
+    public class AssignmentDTO
+    {
+        public int Id { get; set; }
+        public string Title { get; set; }
+        public string Description { get; set; }
+        public DateTime DueDate { get; set; }
     }
 }

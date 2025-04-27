@@ -28,9 +28,20 @@
         </div>
     </div>
 
-    <!-- Conditionally show Assignments -->
     <div *ngIf="view === 'assignments'">
         <h3>Assignments:</h3>
-        <p>Assignment list will go here...</p>
+        <div *ngIf="assignments.length > 0; else noAssignments" class="assignments-list">
+            <div class="assignment-card" *ngFor="let assignment of assignments; let i = index">
+                <div class="assignment-info">
+                    <h4>{{ assignment.title }}</h4>
+                    <p><strong>Description:</strong> {{ assignment.description }}</p>
+                    <p><strong>Due Date:</strong> <span class="due-date">
+                            {{ datePipe.transform(assignment.dueDate, 'dd/MM/yy, hh:mm a') }}</span></p>
+                </div>
+            </div>
+        </div>
+        <ng-template #noAssignments>
+            <p class="no-assignments-message">No assignments available.</p>
+        </ng-template>
     </div>
 </div>
