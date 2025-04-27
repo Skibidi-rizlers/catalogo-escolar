@@ -37,14 +37,5 @@ namespace Catalogo_Escolar_API.Services.AuthService
         /// <param name="id"></param>
         /// <returns>Result of operation</returns>
         Task<bool> DeleteAssignment(int id);
-
-        /// <summary>
-        /// Grades an assignment for a student.
-        /// </summary>
-        /// <param name="assignmentId"></param>
-        /// <param name="studentId"></param>
-        /// <param name="grade"></param>
-        /// <returns>Result of operation</returns>
-        Task<bool> GradeAssignment(int assignmentId, int studentId, double grade);
     }
 }
