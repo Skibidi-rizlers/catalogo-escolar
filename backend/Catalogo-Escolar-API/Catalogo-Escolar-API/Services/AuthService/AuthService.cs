@@ -1,11 +1,11 @@
 ﻿using Catalogo_Escolar_API.Helpers;
-using Catalogo_Escolar_API.Model.DTO;
 using Catalogo_Escolar_API.Services.StudentService;
 using Catalogo_Escolar_API.Services.UniqueService;
 using Microsoft.AspNetCore.Identity;
 using System.Net.Mail;
 using System.Net;
 using System.Text;
+using Catalogo_Escolar_API.Model.Payloads.Auth;
 
 namespace Catalogo_Escolar_API.Services.AuthService
 {

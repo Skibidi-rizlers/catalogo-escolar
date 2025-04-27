@@ -1,8 +1,10 @@
 using System.Reflection;
 using System.Text;
 using Catalogo_Escolar_API.Helpers;
+using Catalogo_Escolar_API.Services.AssignmentService;
 using Catalogo_Escolar_API.Services.AuthService;
 using Catalogo_Escolar_API.Services.BackupService;
+using Catalogo_Escolar_API.Services.CourseService;
 using Catalogo_Escolar_API.Services.EmailService;
 using Catalogo_Escolar_API.Services.StudentService;
 using Catalogo_Escolar_API.Services.TeacherService;
@@ -40,6 +42,8 @@ builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IEmailService, EmailService>();
 builder.Services.AddScoped<IStudentService, StudentService>();
 builder.Services.AddScoped<ITeacherService, TeacherService>();
+builder.Services.AddScoped<IAssignmentService, AssignmentService>();
+builder.Services.AddScoped<ICourseService, CourseService>();
 builder.Services.AddScoped<JWTGenerator>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 
@@ -114,11 +118,13 @@ builder.Services.AddSwaggerGen(c =>
 
     c.AddSecurityRequirement(securityRequirement);
 });
-  
+
+// Disable Entity Framework Logging
+builder.Logging.AddFilter("Microsoft.EntityFrameworkCore", LogLevel.None);
+
 builder.Services.AddDbContext<SchoolContext>(options =>
 {
     options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection"));
-    options.LogTo(Console.WriteLine, LogLevel.Critical);
 });
 
 var app = builder.Build();

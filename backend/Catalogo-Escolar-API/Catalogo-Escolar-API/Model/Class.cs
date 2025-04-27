@@ -1,3 +1,4 @@
+using Catalogo_Escolar_API.Model;
 using System.Diagnostics;
 
 public class Class
@@ -10,4 +11,5 @@ public class Class
 
     public ICollection<StudentClass> StudentClasses { get; set; }
     public ICollection<Grade> Grades { get; set; }
+    public ICollection<Assignment> Assignments { get; set; }
 }

@@ -1,4 +1,4 @@
-﻿namespace Catalogo_Escolar_API.Model.DTO
+﻿namespace Catalogo_Escolar_API.Model.Payloads.Auth
 {
     /// <summary>
     /// Represents the schema of the reset password data received on the Auth ResetPassword endpoint.
@@ -18,6 +18,19 @@
         public override string? ToString()
         {
             return $"ResetPasswordPayload (encodedId: {EncodedId}, password: {Password})";
+        }
+        /// <summary>
+        /// Checks if the payload is valid.
+        /// </summary>
+        /// <returns>Validity</returns>
+        public bool IsValid()
+        {
+            if (Password.Length < 5)
+            {
+                return false;
+            }
+
+            return true;
         }
     }
 }

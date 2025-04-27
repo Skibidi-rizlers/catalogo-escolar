@@ -1,4 +1,4 @@
-﻿namespace Catalogo_Escolar_API.Model.DTO
+﻿namespace Catalogo_Escolar_API.Model.Payloads.Auth
 {
     /// <summary>
     /// Represents the schema of the reset password request data received on the Auth ResetPasswordRequest endpoint.

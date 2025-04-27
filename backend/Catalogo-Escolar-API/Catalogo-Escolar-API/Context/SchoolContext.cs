@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Catalogo_Escolar_API.Model;
+using Microsoft.EntityFrameworkCore;
 
 /// <summary>
 /// Represents the class context of database
@@ -38,6 +39,10 @@ public class SchoolContext : DbContext
     /// Grades table
     /// </summary>
     public DbSet<Grade> Grades { get; set; }
+    /// <summary>
+    /// Assignments table
+    /// </summary>
+    public DbSet<Assignment> Assignments { get; set; }
 
     /// <inheritdoc/>
     protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -69,6 +74,12 @@ public class SchoolContext : DbContext
             .WithMany(c => c.Grades)
             .HasForeignKey(g => g.ClassId);
 
+        // Grade ↔ Assignment
+        modelBuilder.Entity<Grade>()
+            .HasOne(g => g.Assignment)
+            .WithMany(a => a.Grades)
+            .HasForeignKey(g => g.AssignmentId);
+
         // Student ↔ User (1:1)
         modelBuilder.Entity<Student>()
             .HasOne(s => s.User)
@@ -86,5 +97,11 @@ public class SchoolContext : DbContext
             .HasOne(c => c.Teacher)
             .WithMany(t => t.Classes)
             .HasForeignKey(c => c.TeacherId);
+
+        // Assignment ↔ Class
+        modelBuilder.Entity<Assignment>()
+            .HasOne(a => a.Class)
+            .WithMany(c => c.Assignments)
+            .HasForeignKey(a => a.ClassId);
     }
 }

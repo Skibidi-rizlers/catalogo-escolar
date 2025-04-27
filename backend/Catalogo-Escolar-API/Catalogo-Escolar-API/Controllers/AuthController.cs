@@ -1,10 +1,7 @@
-﻿using Catalogo_Escolar_API.Model.DTO;
+﻿using Catalogo_Escolar_API.Model.Payloads.Auth;
 using Catalogo_Escolar_API.Services.AuthService;
-using Catalogo_Escolar_API.Services.BackupService;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
 using System.Text;
 
@@ -49,12 +46,19 @@ namespace Catalogo_Escolar_API.Controllers
             try
             {
                 _logger.LogInformation("Login request received for " + model.Email);
+                if (!model.IsValid())
+                {
+                    _logger.LogInformation("Login request result for " + model.ToString() + $": invalid data in body.");
+                    return BadRequest("Invalid data in body.");
+                }
+
                 string? token = await _authService.Login(model);
                 if (string.IsNullOrEmpty(token))
                 {
                     _logger.LogWarning("Login request failure for " + model.Email);
                     return Unauthorized("Failed to login user.");
                 }
+
                 _logger.LogInformation("Login request successful for " + model.Email);
                 return Ok(token);
             }
@@ -82,6 +86,13 @@ namespace Catalogo_Escolar_API.Controllers
             try
             {
                 _logger.LogInformation("Register request received for " + model.ToString());
+
+                if (!model.IsValid())
+                {
+                    _logger.LogInformation("Register request result for " + model.ToString() + $": invalid data in body.");
+                    return BadRequest("Invalid data in body.");
+                }
+
                 var result = await _authService.Register(model);
                 _logger.LogInformation("Register request result for " + model.ToString() + $": {result ?? "failure"}");
                 return Ok(result);
@@ -184,6 +195,12 @@ namespace Catalogo_Escolar_API.Controllers
         {
             try
             {
+                if (!model.IsValid())
+                {
+                    _logger.LogInformation("Reset password request result for " + model.ToString() + $": invalid data in body.");
+                    return BadRequest("Invalid data in body.");
+                }
+
                 var decodedBytes = Convert.FromBase64String(model.EncodedId);
                 var decodedId = Encoding.UTF8.GetString(decodedBytes);
                 int id = int.Parse(decodedId);
