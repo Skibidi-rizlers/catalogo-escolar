@@ -272,6 +272,7 @@ namespace Catalogo_Escolar_API.Services.TeacherService
                     .Where(sc => sc.ClassId == course.Id)
                     .Select(sc => new StudentDTO
                     {
+                        Id = sc.StudentId,
                         Name = sc.Student.User.FirstName + " " + sc.Student.User.LastName
                     }).ToList()
             };

@@ -42,7 +42,10 @@
                         <span class="due-date"> {{ datePipe.transform(assignment.dueDate, 'dd/MM/yy, hh:mm a') }}</span>
                     </p>
                 </div>
-                <button class="delete-button" (click)="deleteAssignment(i)">Delete</button>
+                <div class="assignment-actions">
+                    <button class="delete-button" (click)="deleteAssignment(i)">Delete</button>
+                    <button  (click)="goToAssignment(assignment)">View Assignment</button>
+                </div>
             </div>
         </div>
         <ng-template #noAssignments>

@@ -1,0 +1,23 @@
+<p>Assignment works!</p>
+
+<div>
+  <h2>Add Grade</h2>
+  <form (ngSubmit)="addGrade()">
+    <div>
+      <label>Student ID:</label>
+      <input type="number" [(ngModel)]="studentId" name="studentId" required>
+    </div>
+
+    <div>
+      <label>Grade Value:</label>
+      <input type="number" [(ngModel)]="gradeValue" name="gradeValue" required>
+    </div>
+
+    <div>
+      <label>Given At:</label>
+      <input type="date" [(ngModel)]="givenAt" name="givenAt" required>
+    </div>
+
+    <button type="submit">Add Grade</button>
+  </form>
+</div>

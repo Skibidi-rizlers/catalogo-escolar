@@ -15,6 +15,8 @@ export const unauthorizedInterceptor: HttpInterceptorFn = (req: HttpRequest<any>
       if (req.url.endsWith("login"))
         return throwError(() => err);
 
+      console.log(err);
+
       if ([401, 403].includes(err.status)) {
         snackService.error("Your session expired. Please login again.");
         authState.logout();

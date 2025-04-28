@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { FormBuilder, FormsModule } from '@angular/forms';
 import { Title } from '@angular/platform-browser';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { AuthService } from '../_services/auth-service/auth.service';
 import { SnackbarService } from '../_services/snackbar-service/snackbar.service';
 import { TeacherService } from '../_services/teacher/teacher.service';
@@ -12,7 +12,7 @@ import { Assignment } from '../_models/assignment';
 
 @Component({
   selector: 'app-course',
-  imports: [FormsModule, CommonModule],
+  imports: [FormsModule, CommonModule, RouterModule],
   providers: [DatePipe],
   templateUrl: './course.component.html',
   styleUrl: './course.component.scss'
@@ -37,13 +37,13 @@ export class CourseComponent {
     teacherService.getStudents().subscribe((data: Student[]) => {
       this.availableStudents = data;
     });
-
   }
+
   ngOnInit() {
     this.route.paramMap.subscribe(params => {
-      const courseId = params.get('courseName');
-      if (courseId) {
-        this.teacherService.getCourseDetails(courseId).subscribe({
+      const courseName = params.get('courseName');
+      if (courseName) {
+        this.teacherService.getCourseDetails(courseName).subscribe({
           next: (courseDetails) => {
             this.course = courseDetails;
             this.title.setTitle(courseDetails.name);
@@ -113,5 +113,9 @@ export class CourseComponent {
         this.snackbarService.error('Failed to delete assignment.');
       }
     );
+  }
+
+  goToAssignment(assignment: Assignment) {
+    this.router.navigate(['/assignment', this.course.name, assignment.id]);
   }
 }
