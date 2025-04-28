@@ -16,12 +16,13 @@ export class GradeService {
     constructor(private http: HttpClient) {
     }
 
-    addGrade(studentId: number, assignmentId: number, value: number, givenAt: string): Observable<any> {
+    addGrade(studentId: number, assignmentId: number, value: number, givenAt: string, courseId : number): Observable<any> {
         const payload = {
             studentId,
             assignmentId,
             value,
-            givenAt: new Date(givenAt).toISOString()
+            givenAt: new Date(givenAt).toISOString(),
+            courseId
         };
 
         return this.http.post<any>(`${this.GRADE_API_URL}/post`, payload,

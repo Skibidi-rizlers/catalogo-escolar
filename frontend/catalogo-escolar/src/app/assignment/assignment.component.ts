@@ -7,6 +7,8 @@ import { GradeService } from '../_services/grade-service/grade.service';
 import { FormsModule } from '@angular/forms';
 import { TeacherService } from '../_services/teacher/teacher.service';
 import { Student } from '../_models/student';
+import { Course } from '../_models/course';
+import { AssignmentGrade } from '../_models/grade';
 
 @Component({
   selector: 'app-assignment',
@@ -16,9 +18,10 @@ import { Student } from '../_models/student';
   styleUrl: './assignment.component.scss'
 })
 export class AssignmentComponent {
-  courseName: string | null = null;
+  courseDetails: Course | null = null;
   assignmentId: string | null = null;
   availableStudents: Student[] = [];
+  assignmentGrades : AssignmentGrade[] = [];
 
   studentId: number = 0;
   gradeValue: number = 0;
@@ -31,22 +34,24 @@ export class AssignmentComponent {
 
   ngOnInit() {
     this.route.paramMap.subscribe(params => {
-      this.courseName = params.get('courseName');
+      var courseName = params.get('courseName');
       this.assignmentId = params.get('assignmentId');
-      if (this.assignmentId && this.courseName) {
+      if (this.assignmentId && courseName) {
         this.gradeService.getGrades(this.assignmentId).subscribe({
           next: (grades) => {
             console.log(grades);
+            this.assignmentGrades = grades;
           },
           error: (error) => {
             this.snackbarService.error('Failed to load assignment details.');
           }
         });
 
-        this.teacherService.getCourseDetails(this.courseName).subscribe({
+        this.teacherService.getCourseDetails(courseName).subscribe({
           next: (courseDetails) => {
+            this.courseDetails = courseDetails;
             this.availableStudents = courseDetails.students;
-            console.log(courseDetails.students);
+            console.log(courseDetails);
           }
         });
 
@@ -67,7 +72,7 @@ export class AssignmentComponent {
       return;
     }
 
-    this.gradeService.addGrade(this.studentId, Number(this.assignmentId), this.gradeValue, this.givenAt).subscribe({
+    this.gradeService.addGrade(this.studentId, Number(this.assignmentId), this.gradeValue, this.givenAt, this.courseDetails!.id).subscribe({
       next: (response) => {
         this.snackbarService.success('Grade added successfully!');
         this.studentId = 0;

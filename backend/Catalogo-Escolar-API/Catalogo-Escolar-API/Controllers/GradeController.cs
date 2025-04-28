@@ -24,6 +24,18 @@ namespace Catalogo_Escolar_API.Controllers
                 {
                     return BadRequest("Grade data is invalid");
                 }
+
+                if (grade.Value > 10 || grade.Value <=1)
+                {
+                    return BadRequest("Invalid grade value");
+                }
+
+                var existingGrade = await _gradeService.GetGradeForUser(grade.StudentId, grade.AssignmentId);
+                if (existingGrade != null)
+                {
+                    return BadRequest("Grade already exists for this student and assignment. Please update it.");
+                }
+
                 var result = await _gradeService.Add(grade);
 
                 if (result)

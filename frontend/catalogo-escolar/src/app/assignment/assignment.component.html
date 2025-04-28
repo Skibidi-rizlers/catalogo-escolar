@@ -1,23 +1,45 @@
-<p>Assignment works!</p>
-
-<div>
+<div class="add-grade-container">
   <h2>Add Grade</h2>
-  <form (ngSubmit)="addGrade()">
-    <div>
+  <form (ngSubmit)="addGrade()" class="grade-form">
+    <div class="form-group">
       <label>Student ID:</label>
       <input type="number" [(ngModel)]="studentId" name="studentId" required>
     </div>
 
-    <div>
+    <div class="form-group">
       <label>Grade Value:</label>
       <input type="number" [(ngModel)]="gradeValue" name="gradeValue" required>
     </div>
 
-    <div>
+    <div class="form-group">
       <label>Given At:</label>
       <input type="date" [(ngModel)]="givenAt" name="givenAt" required>
     </div>
 
-    <button type="submit">Add Grade</button>
+    <button type="submit" class="submit-button">Add Grade</button>
   </form>
+</div>
+
+<div *ngIf="assignmentGrades.length > 0" class="grades-list">
+  <h2>Assignment Grades</h2>
+  <table class="grades-table">
+    <thead>
+      <tr>
+        <th>Student Name</th>
+        <th>Grade Value</th>
+        <th>Given At</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let grade of assignmentGrades">
+        <td>{{ grade.studentName }}</td>
+        <td>{{ grade.value }}</td>
+        <td>{{ grade.givenAt | date:'yyyy-MM-dd' }}</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<div *ngIf="assignmentGrades.length === 0" class="no-grades">
+  <p>No grades available yet.</p>
 </div>

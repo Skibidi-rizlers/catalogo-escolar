@@ -1,4 +1,5 @@
 ﻿using Catalogo_Escolar_API.Model.DTOs;
+using Microsoft.EntityFrameworkCore;
 
 namespace Catalogo_Escolar_API.Services.GradeService
 {
@@ -27,6 +28,7 @@ namespace Catalogo_Escolar_API.Services.GradeService
             {
                 var newGrade = new Grade
                 {
+                    ClassId = grade.CourseId,
                     StudentId = grade.StudentId,
                     AssignmentId = grade.AssignmentId,
                     Value = grade.Value,
@@ -114,18 +116,48 @@ namespace Catalogo_Escolar_API.Services.GradeService
         }
 
         ///<inheritdoc/>
-        public Task<List<GradeDTO>> GetGradesForAssignment(int assignmentId)
+        public Task<GradeDTO?> GetGradeForUser(int userId, int assignmentId)
+        {
+            try
+            {
+                var grade = _context.Grades.FirstOrDefault(g => g.StudentId == userId && g.AssignmentId == assignmentId);
+                return Task.FromResult<GradeDTO?>(grade != null ? new GradeDTO
+                {
+                    Id = grade.Id,
+                    StudentId = grade.StudentId,
+                    AssignmentId = grade.AssignmentId,
+                    Value = grade.Value,
+                    GivenAt = grade.GivenAt
+                } : null);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error getting grade for user");
+                return Task.FromResult<GradeDTO?>(null);
+            }
+        }
+
+        ///<inheritdoc/>
+        public Task<List<GradeWithStudentNameDTO>> GetGradesForAssignment(int assignmentId)
         {
             try
             {
                 var list = _context.Grades.Where(grade => grade.AssignmentId == assignmentId).ToList();
-                var resultList = new List<GradeDTO>();
+                var resultList = new List<GradeWithStudentNameDTO>();
                 foreach (var item in list) 
                 {
-                    var gradeDTO = new GradeDTO
+                    var student = _context.Students.Include(s => s.User).FirstOrDefault(s => s.Id == item.StudentId);
+                    if (student == null)
+                    {
+                        _logger.LogWarning("Student with id {Id} not found", item.StudentId);
+                        continue;
+                    }
+                    var userData = student.User;
+                    var gradeDTO = new GradeWithStudentNameDTO
                     {
                         Id = item.Id,
                         StudentId = item.StudentId,
+                        StudentName = userData.FirstName + ' ' + userData.LastName,
                         AssignmentId = item.AssignmentId,
                         Value = item.Value,
                         GivenAt = item.GivenAt
@@ -137,7 +169,7 @@ namespace Catalogo_Escolar_API.Services.GradeService
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error getting grades for assignment");
-                return Task.FromResult(new List<GradeDTO>());
+                return Task.FromResult(new List<GradeWithStudentNameDTO>());
             }
         }
 

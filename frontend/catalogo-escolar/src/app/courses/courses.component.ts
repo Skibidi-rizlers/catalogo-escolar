@@ -60,6 +60,7 @@ export class CourseListComponent {
   addCourse() {
     if (this.newCourseName.trim()) {
       const newCourse: Course = {
+        id: 0,
         name: this.newCourseName,
         students: [],
       };

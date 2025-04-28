@@ -27,7 +27,7 @@ namespace Catalogo_Escolar_API.Controllers
                 Teacher? teacher = await _teacherService.Get(teacherEmail);
                 if (teacher == null)
                     return BadRequest("Teacher data is invalid");
-                var teacherId = teacher.UserId;
+                var teacherId = teacher.Id;
                 var result = await _teacherService.DeleteCourse(courseName, teacherId);
                 if (result)
                     return Ok("Course deleted");
@@ -52,7 +52,7 @@ namespace Catalogo_Escolar_API.Controllers
                 Teacher? teacher = await _teacherService.Get(teacherEmail);
                 if (teacher == null)
                     return BadRequest("Teacher data is invalid");
-                var teacherId = teacher.UserId;
+                var teacherId = teacher.Id;
                 var result = await _teacherService.AddCourse(teacherId, courseName);
                 if (result)
                     return Ok("Course added");
@@ -76,7 +76,7 @@ namespace Catalogo_Escolar_API.Controllers
                 Teacher? teacher = await _teacherService.Get(teacherEmail);
                 if (teacher == null)
                     return BadRequest("Teacher data is invalid");
-                var teacherId = teacher.UserId;
+                var teacherId = teacher.Id;
                 var result = await _teacherService.ModifyCourse(oldCourseName, teacherId, courseName);
                 if (result)
                     return Ok("Course modified");
@@ -100,7 +100,7 @@ namespace Catalogo_Escolar_API.Controllers
                 Teacher? teacher = await _teacherService.Get(teacherEmail);
                 if (teacher == null)
                     return BadRequest("Teacher data is invalid");
-                var teacherId = teacher.UserId;
+                var teacherId = teacher.Id;
                 var result = await _teacherService.GetTeacherCourses(teacherId);
                 if (result != null)
                     return Ok(result);
@@ -123,7 +123,7 @@ namespace Catalogo_Escolar_API.Controllers
                 Teacher? teacher = await _teacherService.Get(teacherEmail);
                 if (teacher == null)
                     return BadRequest("Teacher data is invalid");
-                var teacherId = teacher.UserId;
+                var teacherId = teacher.Id;
                 var result = await _teacherService.GetTeacherCourse(teacherId, courseName);
                 if (result != null)
                     return Ok(result);

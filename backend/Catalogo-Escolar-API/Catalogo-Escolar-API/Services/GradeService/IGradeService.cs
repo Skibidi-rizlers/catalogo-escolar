@@ -26,13 +26,20 @@ namespace Catalogo_Escolar_API.Services.GradeService
         /// <param name="id"></param>
         /// <returns>Grade or null</returns>
         Task<GradeDTO?> GetById(int id);
+        /// <summary>
+        /// Returns the grade for the provided user id and assignment id.
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="assignmentId"></param>
+        /// <returns>Grade or null</returns>
+        Task<GradeDTO?> GetGradeForUser(int userId, int assignmentId);
 
         /// <summary>
         /// Returns the grades for the provided assignment id.
         /// </summary>
         /// <param name="assignmentId"></param>
         /// <returns>List of grades</returns>
-        Task<List<GradeDTO>> GetGradesForAssignment(int assignmentId);
+        Task<List<GradeWithStudentNameDTO>> GetGradesForAssignment(int assignmentId);
         /// <summary>
         /// Updates grade.
         /// </summary>
